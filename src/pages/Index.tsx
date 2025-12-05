@@ -25,52 +25,115 @@ const Index = () => {
     return () => observerRef.current?.disconnect();
   }, []);
 
+  const processes1 = [
+    { name: 'Анализ "сырых" требований, нормативных документов', time: '10,50 ч/мес', auto: '70%', saved: '7,35 ч/мес' },
+    { name: 'Написание и оформление спецификаций требований (SRS, FSD)', time: '12,75 ч/мес', auto: '50%', saved: '6,38 ч/мес' },
+    { name: 'Разработка пользовательских историй (US) и критериев приемки', time: '9,00 ч/мес', auto: '60%', saved: '5,40 ч/мес' }
+  ];
+
+  const processes3 = [
+    { name: 'Транскрибация и анализ записей встреч', time: '5,25 ч/мес', auto: '95%', saved: '4,99 ч/мес' },
+    { name: 'Подготовка и согласование повесток, материалов к встречам', time: '3,00 ч/мес', auto: '80%', saved: '2,40 ч/мес' },
+    { name: 'Написание и рассылка вопросов, сбор доп. ответов', time: '3,75 ч/мес', auto: '85%', saved: '3,19 ч/мес' },
+    { name: 'Подготовка материалов для UAT', time: '4,50 ч/мес', auto: '60%', saved: '2,70 ч/мес' }
+  ];
+
+  const processesProject = [
+    { name: 'Координация с командами, ответы на вопросы в чатах', time: '10,50 ч/мес', auto: '20%', saved: '2,10 ч/мес' },
+    { name: 'Поиск информации в прошлых проектах, базах знаний', time: '6,75 ч/мес', auto: '90%', saved: '6,08 ч/мес' },
+    { name: 'Административная работа, отчетность по статусу', time: '4,50 ч/мес', auto: '80%', saved: '3,60 ч/мес' },
+    { name: 'Создание и поддержка глоссария, моделей данных', time: '3,75 ч/мес', auto: '70%', saved: '2,63 ч/мес' },
+    { name: 'Трассировка требований и управление изменениями', time: '6,00 ч/мес', auto: '90%', saved: '5,40 ч/мес' },
+    { name: 'Разработка тест-кейсов и тестовых сценариев', time: '9,75 ч/мес', auto: '75%', saved: '7,31 ч/мес' }
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(66,153,225,0.1),transparent_50%)] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
+      
+      <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
         
-        <Card className="observe-element bg-gradient-to-r from-blue-50 to-blue-100 border-l-8 border-primary shadow-lg p-8 mb-12">
+        <div className="text-center mb-12 observe-element">
+          <div className="inline-block px-4 py-2 border border-primary/50 rounded-full mb-6 bg-primary/10 backdrop-blur-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <span className="text-sm text-primary font-medium">СИСТЕМА ОПТИМИЗАЦИИ БА 2.0</span>
+            </div>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black mb-4 gradient-text tracking-tight">
+            Новая эра автоматизации
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Точная экономия времени и ресурсов с применением искусственного интеллекта
+          </p>
+        </div>
+
+        <Card className="observe-element hologram-card p-8 mb-12 scan-line">
           <div className="flex items-start gap-4 mb-6">
-            <div className="text-4xl">📌</div>
-            <h1 className="text-3xl font-black text-foreground">
-              Итоговая рекомендация по внедрению ИИ для бизнес-аналитиков
-            </h1>
+            <div className="text-5xl">📌</div>
+            <div className="flex-1">
+              <h2 className="text-3xl font-black text-foreground mb-4">
+                Итоговая рекомендация по внедрению
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                На основе трудозатрат и потенциала автоматизации, необходимо реализовывать задачи в следующем порядке:
+              </p>
+            </div>
           </div>
           
-          <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
-            На основе трудозатрат и потенциала автоматизации, необходимо реализовывать задачи в следующем порядке:
-          </p>
+          <div className="grid gap-4 mb-8">
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">1</div>
+              <div>
+                <strong className="text-foreground">Задача 1 – Этап 1:</strong>
+                <span className="text-muted-foreground ml-2">Усовершенствование пространства «Генератор БТ» — предоставить ИИ доступ к файлам БТ в Pyrus/Minerva.</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">2</div>
+              <div>
+                <strong className="text-foreground">Задача 2 – Этап 2:</strong>
+                <span className="text-muted-foreground ml-2">Расширить доступ ИИ к Confluence и КИС (Деметра, Эластик, ЛИС, Диасофт) для глубокого анализа.</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">3</div>
+              <div>
+                <strong className="text-foreground">Задача 3:</strong>
+                <span className="text-muted-foreground ml-2">Запустить AI-помощник для встреч — автоматизация подготовки, проведения и оформления встреч.</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">4</div>
+              <div>
+                <strong className="text-foreground">Проект «Централизованная AI-модель для БА»:</strong>
+                <span className="text-muted-foreground ml-2">Создать единое приложение для автоматизации всех ключевых процессов.</span>
+              </div>
+            </div>
+          </div>
           
-          <ol className="space-y-3 mb-6 ml-6">
-            <li className="text-foreground leading-relaxed">
-              <strong className="text-primary">Задача 1 – Этап 1</strong>: Усовершенствование пространства{' '}
-              <span className="font-bold">&laquo;Генератор БТ&raquo;</span> — предоставить ИИ доступ к файлам БТ в Pyrus/Minerva.
-            </li>
-            <li className="text-foreground leading-relaxed">
-              <strong className="text-primary">Задача 2 – Этап 2</strong>: Расширить доступ ИИ к Confluence и КИС (Деметра, Эластик, ЛИС, Диасофт) для глубокого анализа.
-            </li>
-            <li className="text-foreground leading-relaxed">
-              <strong className="text-primary">Задача 3</strong>: Запустить{' '}
-              <span className="font-bold">AI-помощник для встреч</span> — автоматизация подготовки, проведения и оформления встреч.
-            </li>
-            <li className="text-foreground leading-relaxed">
-              <strong className="text-primary">Проект «Централизованная AI-модель для БА»</strong> — создать единое приложение для автоматизации всех ключевых процессов.
-            </li>
-          </ol>
-          
-          <div className="flex flex-wrap items-center gap-4 mt-8">
-            <Badge className="bg-primary/20 text-primary border-primary/50 px-6 py-3 text-base">
-              <Icon name="Clock" size={20} className="mr-2" />
-              Экономия: ~40–45 ч/мес
-            </Badge>
-            <Badge className="bg-secondary/20 text-secondary border-secondary/50 px-6 py-3 text-base">
-              <Icon name="TrendingUp" size={20} className="mr-2" />
-              Почти 1 месяц работы в год
-            </Badge>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-6 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 neon-border">
+              <div className="flex items-center gap-3 mb-2">
+                <Icon name="Zap" size={24} className="text-primary" />
+                <span className="text-sm text-muted-foreground">Общий потенциал (при полной реализации)</span>
+              </div>
+              <div className="text-4xl font-black text-primary">~62 ч/мес</div>
+              <p className="text-xs text-muted-foreground mt-2">Более 1,5 полных рабочих месяца в год</p>
+            </div>
+            <div className="p-6 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/5 border border-secondary/30">
+              <div className="flex items-center gap-3 mb-2">
+                <Icon name="Target" size={24} className="text-secondary" />
+                <span className="text-sm text-muted-foreground">Реалистичная экономия (1-й год)</span>
+              </div>
+              <div className="text-4xl font-black text-secondary">40–50 ч/мес</div>
+              <p className="text-xs text-muted-foreground mt-2">1 полный рабочий месяц в год после адаптации</p>
+            </div>
           </div>
         </Card>
 
-        <Card className="observe-element task-card bg-white border-2 border-primary/30 shadow-lg p-8 mb-8">
+        <Card className="observe-element hologram-card p-8 mb-8">
           <div className="flex items-start gap-4 mb-6">
             <div className="text-5xl">🚀</div>
             <div className="flex-1">
@@ -84,7 +147,7 @@ const Index = () => {
           </div>
           
           <div className="space-y-6">
-            <div className="bg-red-50 border-l-4 border-destructive p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-destructive/10 border-l-4 border-destructive">
               <div className="flex items-center gap-2 mb-3">
                 <Icon name="AlertCircle" className="text-destructive" size={24} />
                 <h3 className="text-xl font-bold text-destructive">Проблема</h3>
@@ -95,7 +158,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="bg-green-50 border-l-4 border-secondary p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
               <div className="flex items-center gap-2 mb-3">
                 <Icon name="Lightbulb" className="text-secondary" size={24} />
                 <h3 className="text-xl font-bold text-secondary">Решение</h3>
@@ -105,20 +168,31 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-accent p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Ожидаемый эффект</h3>
+            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="BarChart3" className="text-accent" size={24} />
+                <h3 className="text-xl font-bold text-accent">Экономия по процессам</h3>
               </div>
-              <p className="text-foreground/80 leading-relaxed mb-3">
-                Быстрая оптимизация — этим пространством уже пользуются{' '}
-                <span className="highlight-box font-bold">71,4% БА</span>. Экономия времени на первичной проработке требований.
-              </p>
+              <div className="space-y-3">
+                {processes1.map((proc, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-foreground">{proc.name}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{proc.time} → {proc.auto} автоматизации</div>
+                    </div>
+                    <div className="text-lg font-black text-destructive ml-4">{proc.saved}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 p-4 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-between">
+                <span className="text-lg font-bold text-foreground">Итого по Задаче 1:</span>
+                <span className="text-3xl font-black text-primary">19,13 ч/мес</span>
+              </div>
             </div>
           </div>
         </Card>
 
-        <Card className="observe-element task-card bg-white border-2 border-primary/30 shadow-lg p-8 mb-8">
+        <Card className="observe-element hologram-card p-8 mb-8">
           <div className="flex items-start gap-4 mb-6">
             <div className="text-5xl">🚀</div>
             <div className="flex-1">
@@ -132,65 +206,69 @@ const Index = () => {
           </div>
           
           <div className="space-y-6">
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-yellow-500/10 border-l-4 border-yellow-500">
               <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-yellow-600" size={24} />
-                <h3 className="text-xl font-bold text-yellow-700">Цель</h3>
+                <Icon name="Target" className="text-yellow-500" size={24} />
+                <h3 className="text-xl font-bold text-yellow-500">Цель</h3>
               </div>
               <p className="text-foreground/80 leading-relaxed">
                 Дать ИИ доступ к полному контексту для написания более глубоких и точных требований.
               </p>
             </div>
 
-            <div className="bg-green-50 border-l-4 border-secondary p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
+            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
+              <div className="flex items-center gap-2 mb-4">
                 <Icon name="Wrench" className="text-secondary" size={24} />
                 <h3 className="text-xl font-bold text-secondary">Решение</h3>
               </div>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
                   <Icon name="CheckCircle2" size={20} className="text-secondary mt-1 flex-shrink-0" />
                   <div>
                     <strong className="text-foreground">Доступ к Confluence:</strong>
-                    <p className="text-foreground/70 mt-1">
+                    <p className="text-foreground/70 text-sm mt-1">
                       ИИ получает доступ ко всем разделам Confluence (кроме закрытых по решению ИТ) и может анализировать не только текст, но и приложенные файлы.
                     </p>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
                   <Icon name="CheckCircle2" size={20} className="text-secondary mt-1 flex-shrink-0" />
                   <div>
                     <strong className="text-foreground">Доступ к КИС:</strong>
-                    <p className="text-foreground/70 mt-1">
+                    <p className="text-foreground/70 text-sm mt-1">
                       Расширить доступ ИИ к системам: <em>Деметра, Эластик СКБС, Эластик СКБСЖ, ЛИС, Диасофт Инлайф</em> — для анализа шифров, наименований продуктов, типов (коллективный и т.д.).
                     </p>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
                   <Icon name="CheckCircle2" size={20} className="text-secondary mt-1 flex-shrink-0" />
                   <div>
                     <strong className="text-foreground">Улучшение промпта:</strong>
-                    <p className="text-foreground/70 mt-1">
+                    <p className="text-foreground/70 text-sm mt-1">
                       Дополнить промпт для «Генератора БТ», чтобы ИИ анализировал не только задачи в Pyrus/Minerva, но и реальный функционал и данные из КИС — это сократит время на совещания и однотипные вопросы в ИТ.
                     </p>
                   </div>
-                </li>
-              </ul>
+                </div>
+              </div>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-accent p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
               <div className="flex items-center gap-2 mb-3">
                 <Icon name="TrendingUp" className="text-accent" size={24} />
                 <h3 className="text-xl font-bold text-accent">Ожидаемый эффект</h3>
               </div>
-              <p className="text-foreground/80 leading-relaxed">
+              <p className="text-foreground/80 leading-relaxed mb-3">
                 Повышение качества драфтов БТ, снижение количества уточнений, экономия времени на согласовании и анализе. Глубокая интеграция с реальными данными компании.
               </p>
+              <div className="p-4 rounded-lg bg-primary/20 border border-primary/50 inline-flex items-center gap-3">
+                <span className="text-foreground">Дополнительная экономия:</span>
+                <span className="text-2xl font-black text-primary">~2,5 ч/мес</span>
+              </div>
             </div>
           </div>
         </Card>
 
-        <Card className="observe-element task-card bg-white border-2 border-primary/30 shadow-lg p-8 mb-8">
+        <Card className="observe-element hologram-card p-8 mb-8">
           <div className="flex items-start gap-4 mb-6">
             <div className="text-5xl">🤖</div>
             <div className="flex-1">
@@ -204,81 +282,84 @@ const Index = () => {
           </div>
           
           <div className="space-y-6">
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-yellow-500/10 border-l-4 border-yellow-500">
               <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-yellow-600" size={24} />
-                <h3 className="text-xl font-bold text-yellow-700">Цель</h3>
+                <Icon name="Target" className="text-yellow-500" size={24} />
+                <h3 className="text-xl font-bold text-yellow-500">Цель</h3>
               </div>
               <p className="text-foreground/80 leading-relaxed">
                 Автоматизировать подготовку, проведение и оформление встреч — сократить трудозатраты на проработку вопросов с заинтересованными сторонами и написание первичного драфта требований.
               </p>
             </div>
 
-            <div className="bg-green-50 border-l-4 border-secondary p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
+            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
+              <div className="flex items-center gap-2 mb-4">
                 <Icon name="Workflow" className="text-secondary" size={24} />
                 <h3 className="text-xl font-bold text-secondary">Как это работает</h3>
               </div>
               
-              <div className="space-y-4 mt-4">
-                <div className="bg-white p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon name="Calendar" size={18} className="text-primary" />
-                    <strong className="text-foreground">Подготовка встречи:</strong>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-lg bg-card border border-border">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon name="Calendar" size={20} className="text-primary" />
+                    <strong className="text-sm text-foreground">Подготовка встречи</strong>
                   </div>
-                  <ul className="ml-6 space-y-1 text-sm text-foreground/70">
-                    <li>• Пользователь создаёт встречу в Outlook, указывает: название, ссылку на задачу / описание, приглашает заинтересованных лиц</li>
-                    <li>• ИИ анализирует: задачу, контекст встречи, похожие реализованные проекты, релевантных заинтересованных лиц</li>
-                    <li>• ИИ улучшает описание встречи, расширяет список З.Л., предлагает вопросы для обсуждения</li>
+                  <ul className="space-y-1 text-xs text-muted-foreground">
+                    <li>• Создание встречи в Outlook</li>
+                    <li>• Анализ задачи и контекста</li>
+                    <li>• Генерация вопросов для обсуждения</li>
                   </ul>
                 </div>
-
-                <div className="bg-white p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon name="Video" size={18} className="text-primary" />
-                    <strong className="text-foreground">Проведение встречи:</strong>
+                <div className="p-4 rounded-lg bg-card border border-border">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon name="Video" size={20} className="text-primary" />
+                    <strong className="text-sm text-foreground">Проведение встречи</strong>
                   </div>
-                  <ul className="ml-6 space-y-1 text-sm text-foreground/70">
-                    <li>• Во время встречи (VK Teams / MTS link) — ИИ работает в отдельном окне, анализирует речь участников</li>
-                    <li>• В режиме реального времени предлагает наводящие вопросы, уточнения, помогает не упустить ключевые моменты</li>
-                    <li>• Заносит ответы в свою базу</li>
+                  <ul className="space-y-1 text-xs text-muted-foreground">
+                    <li>• Анализ речи в реальном времени</li>
+                    <li>• Предложение наводящих вопросов</li>
+                    <li>• Запись ключевых моментов</li>
                   </ul>
                 </div>
-
-                <div className="bg-white p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon name="FileCheck" size={18} className="text-primary" />
-                    <strong className="text-foreground">После встречи:</strong>
+                <div className="p-4 rounded-lg bg-card border border-border">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon name="FileCheck" size={20} className="text-primary" />
+                    <strong className="text-sm text-foreground">После встречи</strong>
                   </div>
-                  <ul className="ml-6 space-y-1 text-sm text-foreground/70">
-                    <li>• ИИ формирует готовый файл в Word — драфт требований или краткий список вопросов и ответов</li>
-                    <li>• Может готовить предварительные ответы на вопросы заказчика (например, сроки доработок) — на основе комментариев и полей релизов в задаче</li>
+                  <ul className="space-y-1 text-xs text-muted-foreground">
+                    <li>• Формирование драфта в Word</li>
+                    <li>• Список вопросов и ответов</li>
+                    <li>• Предварительные оценки сроков</li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-accent p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Zap" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Ожидаемый эффект</h3>
+            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="BarChart3" className="text-accent" size={24} />
+                <h3 className="text-xl font-bold text-accent">Экономия по процессам</h3>
               </div>
-              <div className="flex flex-wrap gap-4 items-center">
-                <Badge className="bg-accent/20 text-accent border-accent/50 px-4 py-2">
-                  Автоматизация: 50–60%
-                </Badge>
-                <Badge className="bg-destructive/20 text-destructive border-destructive/50 px-4 py-2">
-                  Экономия: 10–12 ч/мес
-                </Badge>
+              <div className="space-y-3">
+                {processes3.map((proc, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-foreground">{proc.name}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{proc.time} → {proc.auto} автоматизации</div>
+                    </div>
+                    <div className="text-lg font-black text-destructive ml-4">{proc.saved}</div>
+                  </div>
+                ))}
               </div>
-              <p className="text-foreground/70 mt-3">
-                Снижение контекстных переключений, ускорение анализа требований.
-              </p>
+              <div className="mt-4 p-4 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-between">
+                <span className="text-lg font-bold text-foreground">Итого по Задаче 3:</span>
+                <span className="text-3xl font-black text-primary">13,28 ч/мес</span>
+              </div>
             </div>
           </div>
         </Card>
 
-        <Card className="observe-element task-card bg-white border-2 border-primary/30 shadow-lg p-8 mb-8">
+        <Card className="observe-element hologram-card p-8 mb-8">
           <div className="flex items-start gap-4 mb-6">
             <div className="text-5xl">🧠</div>
             <div className="flex-1">
@@ -292,119 +373,106 @@ const Index = () => {
           </div>
           
           <div className="space-y-6">
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-yellow-500/10 border-l-4 border-yellow-500">
               <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-yellow-600" size={24} />
-                <h3 className="text-xl font-bold text-yellow-700">Цель</h3>
+                <Icon name="Target" className="text-yellow-500" size={24} />
+                <h3 className="text-xl font-bold text-yellow-500">Цель</h3>
               </div>
               <p className="text-foreground/80 leading-relaxed">
                 Полностью освободить БА от рутинных задач — координации, ответов на вопросы, отчётности — чтобы сфокусироваться на содержательной работе.
               </p>
             </div>
 
-            <div className="bg-red-50 border-l-4 border-destructive p-5 rounded-lg">
+            <div className="p-5 rounded-lg bg-destructive/10 border-l-4 border-destructive">
               <div className="flex items-center gap-2 mb-3">
                 <Icon name="AlertCircle" className="text-destructive" size={24} />
                 <h3 className="text-xl font-bold text-destructive">Проблема</h3>
               </div>
               <p className="text-foreground/80 leading-relaxed">
                 На непроизводственные задачи (<em>координация, встречи, отчётность</em>) тратится{' '}
-                <span className="highlight-box font-bold">21.75 ч/мес</span> — значительная часть рабочего времени.
+                <span className="px-2 py-1 bg-yellow-500/20 rounded font-bold">21.75 ч/мес</span> — значительная часть рабочего времени.
               </p>
             </div>
 
-            <div className="bg-green-50 border-l-4 border-secondary p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
+            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
+              <div className="flex items-center gap-2 mb-4">
                 <Icon name="Package" className="text-secondary" size={24} />
                 <h3 className="text-xl font-bold text-secondary">Что будет в приложении</h3>
               </div>
-              <div className="grid md:grid-cols-2 gap-3 mt-4">
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Icon name="FileText" size={16} className="text-primary" />
-                    <strong className="text-sm">Генерация БТ</strong>
+              <div className="grid md:grid-cols-2 gap-3">
+                {[
+                  { icon: 'FileText', title: 'Генерация БТ', desc: 'Основной модуль для написания требований с ИИ-подсказками' },
+                  { icon: 'Users', title: 'Проведение встреч', desc: 'Хранение встреч, вопросов, ответов, протоколов ИИ' },
+                  { icon: 'GitBranch', title: 'Схемы AS IS / TO BE', desc: 'ИИ помогает генерировать диаграммы на основе описания' },
+                  { icon: 'ListChecks', title: 'Тест-кейсы и User Stories', desc: 'Автоматическая генерация по шаблонам' },
+                  { icon: 'Shield', title: 'Проверка БТ', desc: 'ИИ проверяет полноту, логику, соответствие шаблонам' },
+                  { icon: 'BarChart3', title: 'Дайджесты и статистика', desc: 'Еженедельные подборки, рейтинг БА для мотивации' }
+                ].map((item, idx) => (
+                  <div key={idx} className="p-3 rounded-lg bg-card/50 border border-border hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Icon name={item.icon as any} size={16} className="text-primary" />
+                      <strong className="text-sm text-foreground">{item.title}</strong>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
                   </div>
-                  <p className="text-xs text-foreground/70">Основной модуль для написания требований с ИИ-подсказками</p>
-                </div>
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Icon name="Users" size={16} className="text-primary" />
-                    <strong className="text-sm">Проведение встреч</strong>
-                  </div>
-                  <p className="text-xs text-foreground/70">Хранение встреч, вопросов, ответов, протоколов ИИ</p>
-                </div>
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Icon name="GitBranch" size={16} className="text-primary" />
-                    <strong className="text-sm">Схемы AS IS / TO BE</strong>
-                  </div>
-                  <p className="text-xs text-foreground/70">ИИ помогает генерировать диаграммы на основе описания</p>
-                </div>
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Icon name="ListChecks" size={16} className="text-primary" />
-                    <strong className="text-sm">Тест-кейсы и User Stories</strong>
-                  </div>
-                  <p className="text-xs text-foreground/70">Автоматическая генерация по шаблонам</p>
-                </div>
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Icon name="Shield" size={16} className="text-primary" />
-                    <strong className="text-sm">Проверка БТ</strong>
-                  </div>
-                  <p className="text-xs text-foreground/70">ИИ проверяет полноту, логику, соответствие шаблонам</p>
-                </div>
-                <div className="bg-white p-3 rounded border border-gray-200">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Icon name="BarChart3" size={16} className="text-primary" />
-                    <strong className="text-sm">Дайджесты и статистика</strong>
-                  </div>
-                  <p className="text-xs text-foreground/70">Еженедельные подборки, рейтинг БА для мотивации</p>
-                </div>
+                ))}
               </div>
             </div>
 
-            <div className="bg-purple-50 border-l-4 border-purple-500 p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Rocket" className="text-purple-600" size={24} />
-                <h3 className="text-xl font-bold text-purple-700">Первые шаги</h3>
+            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="BarChart3" className="text-accent" size={24} />
+                <h3 className="text-xl font-bold text-accent">Экономия по процессам</h3>
               </div>
-              <ol className="ml-6 space-y-2 text-foreground/80">
-                <li>1. Реализовать само приложение (веб-интерфейс или интеграция в Confluence/Outlook)</li>
-                <li>2. Запустить раздел «Генерация БТ» как MVP</li>
-                <li>3. Добавить раздел «Проведение встреч» — интеграция с Outlook и VK Teams</li>
-                <li>4. Постепенно добавлять остальные разделы</li>
-              </ol>
+              <div className="space-y-2">
+                {processesProject.map((proc, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-foreground">{proc.name}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{proc.time} → {proc.auto} автоматизации</div>
+                    </div>
+                    <div className="text-lg font-black text-destructive ml-4">{proc.saved}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 p-4 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-between">
+                <span className="text-lg font-bold text-foreground">Итого по Проекту:</span>
+                <span className="text-3xl font-black text-primary">27,12 ч/мес</span>
+              </div>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-accent p-5 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Trophy" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Ожидаемый эффект</h3>
+            <div className="p-6 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border-2 border-primary/50 cyber-glow">
+              <div className="flex items-center gap-3 mb-4">
+                <Icon name="Trophy" className="text-primary" size={32} />
+                <h3 className="text-2xl font-black text-foreground">Общий потенциал экономии</h3>
               </div>
-              <div className="flex flex-wrap gap-4 items-center mb-3">
-                <Badge className="bg-secondary/20 text-secondary border-secondary/50 px-4 py-2 text-base">
-                  Полная автоматизация рутины
-                </Badge>
-                <Badge className="bg-destructive/20 text-destructive border-destructive/50 px-4 py-2 text-base">
-                  Экономия: 20+ ч/мес на БА
-                </Badge>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">При полной реализации всех задач:</p>
+                  <div className="text-4xl font-black gradient-text">~62 ч/мес</div>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">В реальности (1-й год):</p>
+                  <div className="text-4xl font-black text-secondary">40–50 ч/мес</div>
+                </div>
               </div>
-              <p className="text-foreground/70">
-                Повышение качества и скорости работы.
+              <p className="text-sm text-muted-foreground mt-4">
+                Эквивалентно <strong className="text-foreground">1 полному рабочему месяцу в год</strong> после адаптации и настройки системы.
               </p>
             </div>
           </div>
         </Card>
 
-        <footer className="observe-element text-center py-8 border-t border-border mt-12">
-          <p className="text-muted-foreground mb-4 text-lg">
-            Готовы оптимизировать работу вашей команды бизнес-аналитиков?
-          </p>
-          <div className="inline-flex items-center gap-2 text-primary font-bold text-xl">
-            <Icon name="Sparkles" size={24} />
-            <span>Начните с автоматизации уже сегодня</span>
+        <footer className="observe-element text-center py-12 mt-12 border-t border-border/50">
+          <div className="inline-block px-6 py-3 rounded-full bg-primary/10 border border-primary/50 mb-4">
+            <div className="flex items-center gap-2">
+              <Icon name="Sparkles" size={20} className="text-primary" />
+              <span className="text-primary font-bold">Готовы начать трансформацию?</span>
+            </div>
           </div>
+          <p className="text-lg text-muted-foreground">
+            Оптимизируйте работу вашей команды бизнес-аналитиков уже сегодня
+          </p>
         </footer>
 
       </div>
