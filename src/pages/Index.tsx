@@ -178,8 +178,8 @@ const blocks: Block[] = [
   {
     id: 'twin',
     emoji: '📌',
-    title: 'ИИ-агент TWIN',
-    subtitle: 'Цифровой двойник сотрудника',
+    title: 'Конструктор цифрового двойника',
+    subtitle: 'Персонализированный ИИ-агент сотрудника',
     badge: 'АГЕНТ',
     badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
     items: [
