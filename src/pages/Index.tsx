@@ -1,479 +1,366 @@
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-const Index = () => {
-  const observerRef = useRef<IntersectionObserver | null>(null);
+interface QAItem {
+  q: string;
+  a: string;
+  num?: string;
+}
 
-  useEffect(() => {
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
-          }
-        });
+interface Block {
+  id: string;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  badgeColor: string;
+  items: QAItem[];
+}
+
+const blocks: Block[] = [
+  {
+    id: 'humanitarian',
+    emoji: '🌍',
+    title: 'Гуманитарные вопросы',
+    subtitle: 'Общая суть и проблема',
+    badge: 'БЛОК 1',
+    badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    items: [
+      {
+        num: '1',
+        q: 'Какова цель проекта? В чём его суть — в одном предложении.',
+        a: 'По ходу запросов на консультации и просьб от коллег по созданию для их подразделений ИИ-агентов мы выработали свой подход к их созданию — заточенный на детальном и сложном описании алгоритмов и обширной базы знаний подразделения. Благодаря этому наши агенты дают не просто ответ — а готовое действие для процесса, без кода и IT-доработок.'
       },
-      { threshold: 0.1 }
-    );
+      {
+        num: '2',
+        q: 'Как появилась идея? Какую конкретную проблему с ИИ-агентами вы решили закрыть?',
+        a: 'При анализе мы обнаружили, что сейчас 89% сотрудников Совкомбанка не используют ИИ-агентов — т.к. не имеют полную картину их функционала и возможностей, а также из-за нерелевантных ответов, связанных с галлюцинациями и отсутствием алгоритмов и баз знаний — меньше доверяют им. Мы решили: перевернуть эту статистику и показать пользователям на своём примере — что через новый механизм продуманных алгоритмов и баз знаний подразделения возможно создать качественного помощника подразделения.'
+      },
+      {
+        num: '3',
+        q: 'Вы выяснили, почему сотрудники не используют ИИ-агенты? И что предлагаете вместо этого?',
+        a: 'Да, не все сотрудники до конца понимают принципы и возможности работы ИИ-агентов, как их настраивать и так далее, из-за чего получают ошибки и не понимают, как их применять в работе. Мы предлагаем им новый подход и механику создания ИИ-агентов для их подразделения — с их базой знаний и выстроенными процессами.'
+      },
+      {
+        num: '4',
+        q: 'Вы создали новый ИИ? Или что делает ваш агент полезным — в отличие от «Совы» или «Дипсикой»?',
+        a: 'Нет, мы не создали новый ИИ — мы разработали собственную механику по созданию специализированных ИИ-агентов подразделений, которые работают в привычных системах и дают релевантный ответ, который соответствует рабочим процессам направления.'
+      },
+      {
+        num: '5',
+        q: 'Почему не просто дали инструкции, а создали своих агентов? Что не сработало в старом подходе?',
+        a: 'Не для всех ИИ-агентов имеются инструкции и руководства использования, и зачастую сотрудники хотят создать ИИ-агента конкретно для своего подразделения, но не до конца знают, как это сделать максимально качественно. В обычных ИИ-агентах сейчас — мало того что они подходят не всем подразделениям — в них зачастую отсутствует база знаний подразделения, из-за чего у ИИ не хватает контекста по процессам.'
+      },
+      {
+        num: '6',
+        q: 'Есть ли уже реальный эффект? Приведите 1–2 конкретных примера с цифрами.',
+        a: 'Да, мы уже реализовали в начале марта 2 специализированных ИИ-агента:\n\n• Универсальный ассистент для Бизнес и Системных аналитиков — в месяц принес выгоды в 248 тысяч рублей и помог написать порядка 11 Бизнес-Требований.\n\n• ИИ-агент для Руководителей и рекрутеров HR — за месяц оптимизировал время сотрудников на 600 человеко-часов в разрезе 50 сотрудников.'
+      },
+    ]
+  },
+  {
+    id: 'novelty',
+    emoji: '🚀',
+    title: 'Вопросы к новизне',
+    subtitle: 'Что вы сделали уникального',
+    badge: 'БЛОК 2',
+    badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+    items: [
+      {
+        num: '7',
+        q: 'В чём новизна? Чем ваши «специализированные агенты» отличаются от «Совы» или «Бизнес-Аналитика»?',
+        a: 'Наши агенты отличаются механикой создания — у обычных ИИ-агентов отсутствует детальная база знаний подразделения и сложные алгоритмы. Наши агенты выдают релевантный ответ, который можно использовать в реальном рабочем процессе.'
+      },
+      {
+        num: '8',
+        q: 'Что вы сделали такого, чего раньше не было?',
+        a: 'Мы создали персонализированных ИИ-агентов, встроенных в рабочие процессы без кода, с детализированными алгоритмами и базой знаний под каждое подразделение. Это не «чат-бот», а цифровой сотрудник, который знает вашу работу.'
+      },
+      {
+        num: '9',
+        q: 'Почему это не просто «еще один ИИ-ассистент»?',
+        a: 'Потому что мы не просто даем инструмент — мы перестраиваем парадигму: от «как использовать ИИ» к «ИИ сам работает за тебя». Без IT, без обучения, без ошибок — только результат.'
+      },
+      {
+        num: '10',
+        q: 'Что делает ваш проект уникальным и куда и как вы планируете масштабироваться?',
+        a: 'Уникальность — в экосистеме персонализированных агентов, которые можно масштабировать под любое подразделение, сохраняя специфику, без потери качества и с быстрым внедрением. Масштабируем через конструктор — не копируем, адаптируем.'
+      },
+      {
+        num: '11',
+        q: 'Почему вы называете это «новым механизмом»? Что в нём принципиально нового?',
+        a: 'Потому что мы объединили три ключевых элемента: 1) Персонализация под процесс, 2) Внедрение без кода, 3) Работа на собственной базе знаний. Это не просто ИИ — это ИИ, адаптированный под бизнес-реальность.'
+      },
+    ]
+  },
+  {
+    id: 'metrics',
+    emoji: '📊',
+    title: 'Расчёты, внедрение и масштабирование',
+    subtitle: 'Измеримость и реализуемость',
+    badge: 'БЛОК 3',
+    badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30',
+    items: [
+      {
+        num: '12',
+        q: 'Как вы измеряете экономию? Есть ли замеры? Приведите методологию.',
+        a: 'Через время на задачу до и после внедрения агента. Например: HR-агент сократил время на подбор на 28,2%, андеррайтер — на 45%. Это реальные данные из пилотов — не прогнозы.'
+      },
+      {
+        num: '13',
+        q: 'Сколько времени нужно, чтобы внедрить агента в новое подразделение?',
+        a: 'От 1 до 5 дней — в зависимости от сложности. Мы не пишем код — мы настраиваем агента на их процессы, термины и базу знаний. Внедрение — в привычной системе, без IT-доработок.'
+      },
+      {
+        num: '14',
+        q: 'Как вы будете переиспользовать агентов? Как масштабируете на 100+ подразделений, если у каждого своя специфика?',
+        a: 'Мы не переиспользуем агентов — мы переиспользуем конструктор и шаблоны. Например, агент для HR можно адаптировать для бухгалтерии — заменив базу знаний и алгоритмы. Это модульная система, а не копирование.'
+      },
+      {
+        num: '15',
+        q: 'Собирали ли вы обратную связь? Каким образом? Какие метрики используете?',
+        a: 'Через автоматизированные опросы после каждого использования, аналитику по времени выполнения задач и прямую обратную связь от пользователей. Измеряем: снижение времени, рост качества, снижение ошибок.'
+      },
+      {
+        num: '16',
+        q: 'Вы заявили 460 млн ₽ в год. Что для этого необходимо? Какие критерии?',
+        a: 'Нужно: 1) Внедрить агентов в 100+ подразделений, 2) Сократить время на рутинные задачи на 30–50%, 3) Перевести 50% сотрудников на работу с ИИ-агентами. Это реалистичный расчет на основе пилотов — не фантазия, а математика.'
+      },
+      {
+        num: '17',
+        q: 'Если подразделение захочет своего агента — им нужно обращаться к вам? Какой процесс?',
+        a: 'Да: сотрудник обращается — мы проводим 1-часовую сессию, выявляем его задачи, создаем агента за 1–3 дня, внедряем в его систему. Нет бюрократии — есть результат.'
+      },
+      {
+        num: '18',
+        q: 'Недавно было обучение по Цифровым двойникам. Чем ваш Цифровой двойник андеррайтера отличается от того, что показывали?',
+        a: 'Мы не просто копируем — мы автоматизируем 45% рутинных задач, работаем в Pyrus, без кода, с базой знаний. Экономия — 2,06 млн ₽ в год. Это не демонстрация — это работающий пилот.'
+      },
+    ]
+  },
+  {
+    id: 'underwriter',
+    emoji: '📌',
+    title: 'ИИ-агент Андеррайтер',
+    subtitle: 'Детальные вопросы по агенту',
+    badge: 'АГЕНТ',
+    badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    items: [
+      {
+        num: 'В1',
+        q: 'Откуда коэффициент 1.4?',
+        a: 'Стандартный отраслевой коэффициент полной стоимости труда: НДФЛ (13%) + страховые взносы (30%) + рабочее место, ПО, административные расходы. Итого ~40% сверх ФОТ — применяется как норматив в планово-экономических расчётах СГ.'
+      },
+      {
+        num: 'В2',
+        q: 'Откуда 3 000 ч.ч./год?',
+        a: 'Данные из двух источников: статистика Pyrus по шифрам 520/521 + хронометраж операций через интервью с андеррайтерами. Две точки верификации снижают погрешность.'
+      },
+      {
+        num: 'В3',
+        q: 'Почему именно 45% оптимизации?',
+        a: 'Расчёт по рутинным операциям (обработка заявок, проверка документов), поддающимся автоматизации. Сложные решения не включены. 45% — взвешенная оценка по 3 уровням должностей.'
+      },
+      {
+        num: 'В4',
+        q: 'Как агент интегрируется с Pyrus технически?',
+        a: 'Работает как ИИ-ассистент поверх Pyrus — без доработки IT-систем, без кода. Взаимодействие через чат, данные подтягиваются вручную или через буфер. IT-затраты не включены — чтобы показать чистый эффект.'
+      },
+      {
+        num: 'В5',
+        q: 'Все ли 10 сотрудников работают с агентом одинаково?',
+        a: 'Нет. Основной эффект — на 7 андеррайтерах с высокой долей рутины. Начальники и главный — в аналитике. 45% — средневзвешенная по всему подразделению.'
+      },
+    ]
+  },
+  {
+    id: 'twin',
+    emoji: '📌',
+    title: 'ИИ-агент TWIN',
+    subtitle: 'Цифровой двойник сотрудника',
+    badge: 'АГЕНТ',
+    badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+    items: [
+      {
+        num: 'В6',
+        q: 'Как верифицировались 15 658 пользователей?',
+        a: 'Среднесуточное количество активных пользователей Pyrus — фактическая цифра из внутренней статистики Совкомбанка.'
+      },
+      {
+        num: 'В7',
+        q: 'Что значит «ограничение проекта» для 5%?',
+        a: 'Два фактора: (1) поэтапное развёртывание — не все получат доступ сразу; (2) ограниченный перечень автоматизируемых процессов на старте. 5% — консервативная оценка первого года.'
+      },
+      {
+        num: 'В8',
+        q: 'Как рассчитана ставка 600 ₽/ч?',
+        a: 'Средневзвешенная ставка по всем пользователям Pyrus — включает линейных сотрудников, ТОПов и аналитиков. Использование единой ставки оправдано — экономия считается по всему массиву.'
+      },
+      {
+        num: 'В9',
+        q: 'Какова окупаемость при 345 млн ₽ экономии?',
+        a: 'Агент реализован без IT-затрат и кода — стоимость внедрения минимальна (методология, обучение, сопровождение). Срок окупаемости — менее одного квартала.'
+      },
+      {
+        num: 'В10',
+        q: 'Как будет измеряться реальная экономия?',
+        a: 'Базовый замер — среднее время на процессы в Pyrus до запуска агента (хронометраж/опрос). После — повторный замер через 3 месяца. Дополнительный индикатор: количество обращений к агенту и закрытых задач через него.'
+      },
+    ]
+  },
+  {
+    id: 'hr',
+    emoji: '📌',
+    title: 'ИИ-агент HR',
+    subtitle: 'Рекрутеры и руководители',
+    badge: 'АГЕНТ',
+    badgeColor: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+    items: [
+      {
+        num: 'В11',
+        q: 'Что входит в 7 минут на резюме для руководителя?',
+        a: 'Полный цикл: открыть, прочитать, оценить соответствие, принять решение. С ИИ — агент выдаёт готовый скоринг за 1,5 минуты, руководитель только верифицирует.'
+      },
+      {
+        num: 'В12',
+        q: 'Откуда 165 127 резюме в год?',
+        a: 'Данные из двух источников: внутренняя статистика HH.ru по аккаунту СГ + данные Страховой Группы по количеству закрытых и открытых вакансий. Реферальные и прямой поиск — незначительная доля.'
+      },
+      {
+        num: 'В13',
+        q: 'Почему 10% для большинства процессов?',
+        a: 'Консервативная единая оценка для операций, где ИИ — помощник, а не замена: генерирует черновик, структурирует, предлагает. Финальное решение — за HR. Для анализа резюме оптимизация выше — 54–55%.'
+      },
+      {
+        num: 'В14',
+        q: 'Что происходит с высвободившимися 7 692 ч.ч.?',
+        a: 'Сокращения не планируются. Время перераспределяется на качественные задачи: глубокая работа с кандидатами, развитие HR-бренда, аналитика подбора. Экономия — через стоимость труда, не через сокращение.'
+      },
+      {
+        num: 'В15',
+        q: 'Как защищаются персональные данные кандидатов?',
+        a: 'Агент работает с обезличенными или агрегированными данными в рамках существующей инфраструктуры СГ. Видеозаписи анализируются только с согласия кандидата. Соответствие 152-ФЗ обеспечивается регламентами HR-процессов.'
+      },
+    ]
+  },
+  {
+    id: 'ba',
+    emoji: '📌',
+    title: 'ИИ-агент BA',
+    subtitle: 'Бизнес-аналитики',
+    badge: 'АГЕНТ',
+    badgeColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+    items: [
+      {
+        num: 'В16',
+        q: 'За счёт чего прирост с 812 до 955 БТ в год?',
+        a: 'Агент ускоряет трудоёмкие этапы: генерацию вопросов, оформление встреч, написание разделов БТ. Высвобождённые часы направляются на новые задачи — отсюда прирост выработки на 17,6% без увеличения штата.'
+      },
+      {
+        num: 'В17',
+        q: 'Почему к БА не применяется коэффициент 1.4?',
+        a: 'В расчёте по БА используется прямая стоимость труда (718,75 ₽/ч) — методологически более консервативный подход. Итоговая экономия занижена — реальный эффект будет выше.'
+      },
+      {
+        num: 'В18',
+        q: 'Какова суммарная экономия по Банку и СГ вместе?',
+        a: 'По СГ — 2 977 546 ₽/год. По Банку данные рассчитываются отдельно с учётом другого состава команды и ставок. Совокупный эффект по агенту BA превышает 3 млн ₽ в год при минимальных затратах на внедрение.'
+      },
+      {
+        num: 'В19',
+        q: 'Кто контролирует качество БТ с ИИ?',
+        a: 'Агент не пишет БТ самостоятельно — он генерирует структуру, разделы и вопросы, которые БА дорабатывает и валидирует. Качество контролируется через стандартный процесс согласования БТ с заказчиком и системным аналитиком — он не меняется с внедрением ИИ.'
+      },
+    ]
+  },
+];
 
-    document.querySelectorAll('.observe-element').forEach((el) => {
-      observerRef.current?.observe(el);
-    });
+const QACard = ({ item }: { item: QAItem }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className={`rounded-xl border transition-all duration-300 cursor-pointer ${open ? 'border-primary/50 bg-primary/5' : 'border-border bg-card/40 hover:border-border/80 hover:bg-card/60'}`}
+      onClick={() => setOpen(!open)}
+    >
+      <div className="flex items-start gap-3 p-4">
+        <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-muted text-xs font-bold text-muted-foreground">
+          {item.num}
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-foreground leading-snug">{item.q}</p>
+          {open && (
+            <div className="mt-3 pt-3 border-t border-border/60">
+              {item.a.split('\n\n').map((para, i) => (
+                <p key={i} className="text-sm text-muted-foreground leading-relaxed mb-2 last:mb-0">{para}</p>
+              ))}
+            </div>
+          )}
+        </div>
+        <Icon
+          name={open ? 'ChevronUp' : 'ChevronDown'}
+          size={16}
+          className={`flex-shrink-0 mt-1 transition-colors ${open ? 'text-primary' : 'text-muted-foreground'}`}
+        />
+      </div>
+    </div>
+  );
+};
 
-    return () => observerRef.current?.disconnect();
-  }, []);
-
-  const processes1 = [
-    { name: 'Анализ "сырых" требований, нормативных документов', time: '10,50 ч/мес', auto: '70%', saved: '7,35 ч/мес' },
-    { name: 'Написание и оформление спецификаций требований (SRS, FSD)', time: '12,75 ч/мес', auto: '50%', saved: '6,38 ч/мес' },
-    { name: 'Разработка пользовательских историй (US) и критериев приемки', time: '9,00 ч/мес', auto: '60%', saved: '5,40 ч/мес' }
-  ];
-
-  const processes3 = [
-    { name: 'Транскрибация и анализ записей встреч', time: '5,25 ч/мес', auto: '95%', saved: '4,99 ч/мес' },
-    { name: 'Подготовка и согласование повесток, материалов к встречам', time: '3,00 ч/мес', auto: '80%', saved: '2,40 ч/мес' },
-    { name: 'Написание и рассылка вопросов, сбор доп. ответов', time: '3,75 ч/мес', auto: '85%', saved: '3,19 ч/мес' },
-    { name: 'Подготовка материалов для UAT', time: '4,50 ч/мес', auto: '60%', saved: '2,70 ч/мес' }
-  ];
-
-  const processesProject = [
-    { name: 'Координация с командами, ответы на вопросы в чатах', time: '10,50 ч/мес', auto: '20%', saved: '2,10 ч/мес' },
-    { name: 'Поиск информации в прошлых проектах, базах знаний', time: '6,75 ч/мес', auto: '90%', saved: '6,08 ч/мес' },
-    { name: 'Административная работа, отчетность по статусу', time: '4,50 ч/мес', auto: '80%', saved: '3,60 ч/мес' },
-    { name: 'Создание и поддержка глоссария, моделей данных', time: '3,75 ч/мес', auto: '70%', saved: '2,63 ч/мес' },
-    { name: 'Трассировка требований и управление изменениями', time: '6,00 ч/мес', auto: '90%', saved: '5,40 ч/мес' },
-    { name: 'Разработка тест-кейсов и тестовых сценариев', time: '9,75 ч/мес', auto: '75%', saved: '7,31 ч/мес' }
-  ];
+const Index = () => {
+  const [activeBlock, setActiveBlock] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(66,153,225,0.1),transparent_50%)] pointer-events-none" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
-      
-      <div className="container mx-auto px-4 py-12 max-w-7xl relative z-10">
-        
-        <div className="text-center mb-12 observe-element">
-          <div className="inline-block px-4 py-2 border border-primary/50 rounded-full mb-6 bg-primary/10 backdrop-blur-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="text-sm text-primary font-medium">СИСТЕМА ОПТИМИЗАЦИИ БА 2.0</span>
-            </div>
+    <div className="min-h-screen bg-background">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(66,153,225,0.07),transparent_50%)] pointer-events-none" />
+
+      <div className="container mx-auto px-4 py-10 max-w-4xl relative z-10">
+
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/40 rounded-full bg-primary/10 mb-5">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+            <span className="text-xs text-primary font-semibold tracking-widest uppercase">Лига достижений</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-black mb-4 gradient-text tracking-tight">
-            Новая эра автоматизации
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Точная экономия времени и ресурсов с применением искусственного интеллекта
+          <h1 className="text-4xl md:text-5xl font-black mb-3 gradient-text">Вопросы и ответы</h1>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Нажмите на вопрос, чтобы раскрыть ответ
           </p>
         </div>
 
-        <Card className="observe-element hologram-card p-8 mb-12 scan-line">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="text-5xl">📌</div>
-            <div className="flex-1">
-              <h2 className="text-3xl font-black text-foreground mb-4">
-                Итоговая рекомендация по внедрению
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                На основе трудозатрат и потенциала автоматизации, необходимо реализовывать задачи в следующем порядке:
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid gap-4 mb-8">
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">1</div>
-              <div>
-                <strong className="text-foreground">Задача 1 – Этап 1:</strong>
-                <span className="text-muted-foreground ml-2">Усовершенствование пространства «Генератор БТ» — предоставить ИИ доступ к файлам БТ в Pyrus/Minerva.</span>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">2</div>
-              <div>
-                <strong className="text-foreground">Задача 2 – Этап 2:</strong>
-                <span className="text-muted-foreground ml-2">Расширить доступ ИИ к Confluence и КИС (Деметра, Эластик, ЛИС, Диасофт) для глубокого анализа.</span>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">3</div>
-              <div>
-                <strong className="text-foreground">Задача 3:</strong>
-                <span className="text-muted-foreground ml-2">Запустить AI-помощник для встреч — автоматизация подготовки, проведения и оформления встреч.</span>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex-shrink-0">4</div>
-              <div>
-                <strong className="text-foreground">Проект «Централизованная AI-модель для БА»:</strong>
-                <span className="text-muted-foreground ml-2">Создать единое приложение для автоматизации всех ключевых процессов.</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-6 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 neon-border">
-              <div className="flex items-center gap-3 mb-2">
-                <Icon name="Zap" size={24} className="text-primary" />
-                <span className="text-sm text-muted-foreground">Общий потенциал (при полной реализации)</span>
-              </div>
-              <div className="text-4xl font-black text-primary">~62 ч/мес</div>
-              <p className="text-xs text-muted-foreground mt-2">Более 1,5 полных рабочих месяца в год</p>
-            </div>
-            <div className="p-6 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/5 border border-secondary/30">
-              <div className="flex items-center gap-3 mb-2">
-                <Icon name="Target" size={24} className="text-secondary" />
-                <span className="text-sm text-muted-foreground">Реалистичная экономия (1-й год)</span>
-              </div>
-              <div className="text-4xl font-black text-secondary">40–50 ч/мес</div>
-              <p className="text-xs text-muted-foreground mt-2">1 полный рабочий месяц в год после адаптации</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="observe-element hologram-card p-8 mb-8">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="text-5xl">🚀</div>
-            <div className="flex-1">
-              <Badge className="bg-primary/20 text-primary border-primary/50 mb-3">
-                Задача 1 – Этап 1
-              </Badge>
-              <h2 className="text-3xl font-black text-foreground mb-3">
-                Усовершенствование пространства «Генератор БТ»
-              </h2>
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="p-5 rounded-lg bg-destructive/10 border-l-4 border-destructive">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="AlertCircle" className="text-destructive" size={24} />
-                <h3 className="text-xl font-bold text-destructive">Проблема</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed">
-                Сейчас ИИ не может анализировать файлы БТ, приложенные в задачах Pyrus (в формах:{' '}
-                <em>Доработка КИС, СК в МП, Чат-боты, Инициация проекта, Оценка ИИ</em>) и Minerva — из-за ограничений доступа со стороны СБ.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Lightbulb" className="text-secondary" size={24} />
-                <h3 className="text-xl font-bold text-secondary">Решение</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed">
-                Предоставить ИИ доступ к файлам БТ, чтобы он мог обогатить свою Базу Знаний и генерировать более структурированные и точные драфты требований — не только на основе контекста задачи (описания, комментариев, протоколов), но и на основе содержимого приложенных файлов.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="BarChart3" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Экономия по процессам</h3>
-              </div>
-              <div className="space-y-3">
-                {processes1.map((proc, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-foreground">{proc.name}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{proc.time} → {proc.auto} автоматизации</div>
+        <div className="space-y-6">
+          {blocks.map((block) => {
+            const isOpen = activeBlock === block.id;
+            return (
+              <Card key={block.id} className="hologram-card overflow-hidden">
+                <button
+                  className="w-full text-left p-6 flex items-center gap-4"
+                  onClick={() => setActiveBlock(isOpen ? null : block.id)}
+                >
+                  <span className="text-3xl">{block.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <Badge className={`text-xs border ${block.badgeColor}`}>{block.badge}</Badge>
                     </div>
-                    <div className="text-lg font-black text-destructive ml-4">{proc.saved}</div>
+                    <div className="text-lg font-black text-foreground">{block.title}</div>
+                    <div className="text-sm text-muted-foreground">{block.subtitle}</div>
                   </div>
-                ))}
-              </div>
-              <div className="mt-4 p-4 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-between">
-                <span className="text-lg font-bold text-foreground">Итого по Задаче 1:</span>
-                <span className="text-3xl font-black text-primary">19,13 ч/мес</span>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="observe-element hologram-card p-8 mb-8">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="text-5xl">🚀</div>
-            <div className="flex-1">
-              <Badge className="bg-primary/20 text-primary border-primary/50 mb-3">
-                Задача 2 – Этап 2
-              </Badge>
-              <h2 className="text-3xl font-black text-foreground mb-3">
-                Усовершенствование пространства «Генератор БТ» (расширение)
-              </h2>
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="p-5 rounded-lg bg-yellow-500/10 border-l-4 border-yellow-500">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-yellow-500" size={24} />
-                <h3 className="text-xl font-bold text-yellow-500">Цель</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed">
-                Дать ИИ доступ к полному контексту для написания более глубоких и точных требований.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="Wrench" className="text-secondary" size={24} />
-                <h3 className="text-xl font-bold text-secondary">Решение</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
-                  <Icon name="CheckCircle2" size={20} className="text-secondary mt-1 flex-shrink-0" />
-                  <div>
-                    <strong className="text-foreground">Доступ к Confluence:</strong>
-                    <p className="text-foreground/70 text-sm mt-1">
-                      ИИ получает доступ ко всем разделам Confluence (кроме закрытых по решению ИТ) и может анализировать не только текст, но и приложенные файлы.
-                    </p>
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-primary/20 rotate-180' : 'bg-muted'}`}>
+                    <Icon name="ChevronDown" size={18} className={isOpen ? 'text-primary' : 'text-muted-foreground'} />
                   </div>
-                </div>
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
-                  <Icon name="CheckCircle2" size={20} className="text-secondary mt-1 flex-shrink-0" />
-                  <div>
-                    <strong className="text-foreground">Доступ к КИС:</strong>
-                    <p className="text-foreground/70 text-sm mt-1">
-                      Расширить доступ ИИ к системам: <em>Деметра, Эластик СКБС, Эластик СКБСЖ, ЛИС, Диасофт Инлайф</em> — для анализа шифров, наименований продуктов, типов (коллективный и т.д.).
-                    </p>
+                </button>
+
+                {isOpen && (
+                  <div className="px-6 pb-6 space-y-3 border-t border-border/50 pt-5">
+                    {block.items.map((item, idx) => (
+                      <QACard key={idx} item={item} />
+                    ))}
                   </div>
-                </div>
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-card/50 border border-border">
-                  <Icon name="CheckCircle2" size={20} className="text-secondary mt-1 flex-shrink-0" />
-                  <div>
-                    <strong className="text-foreground">Улучшение промпта:</strong>
-                    <p className="text-foreground/70 text-sm mt-1">
-                      Дополнить промпт для «Генератора БТ», чтобы ИИ анализировал не только задачи в Pyrus/Minerva, но и реальный функционал и данные из КИС — это сократит время на совещания и однотипные вопросы в ИТ.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="TrendingUp" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Ожидаемый эффект</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed mb-3">
-                Повышение качества драфтов БТ, снижение количества уточнений, экономия времени на согласовании и анализе. Глубокая интеграция с реальными данными компании.
-              </p>
-              <div className="p-4 rounded-lg bg-primary/20 border border-primary/50 inline-flex items-center gap-3">
-                <span className="text-foreground">Дополнительная экономия:</span>
-                <span className="text-2xl font-black text-primary">~2,5 ч/мес</span>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="observe-element hologram-card p-8 mb-8">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="text-5xl">🤖</div>
-            <div className="flex-1">
-              <Badge className="bg-primary/20 text-primary border-primary/50 mb-3">
-                Задача 3
-              </Badge>
-              <h2 className="text-3xl font-black text-foreground mb-3">
-                AI-помощник БА для проведения встреч и проработки БТ
-              </h2>
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="p-5 rounded-lg bg-yellow-500/10 border-l-4 border-yellow-500">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-yellow-500" size={24} />
-                <h3 className="text-xl font-bold text-yellow-500">Цель</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed">
-                Автоматизировать подготовку, проведение и оформление встреч — сократить трудозатраты на проработку вопросов с заинтересованными сторонами и написание первичного драфта требований.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="Workflow" className="text-secondary" size={24} />
-                <h3 className="text-xl font-bold text-secondary">Как это работает</h3>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="p-4 rounded-lg bg-card border border-border">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Icon name="Calendar" size={20} className="text-primary" />
-                    <strong className="text-sm text-foreground">Подготовка встречи</strong>
-                  </div>
-                  <ul className="space-y-1 text-xs text-muted-foreground">
-                    <li>• Создание встречи в Outlook</li>
-                    <li>• Анализ задачи и контекста</li>
-                    <li>• Генерация вопросов для обсуждения</li>
-                  </ul>
-                </div>
-                <div className="p-4 rounded-lg bg-card border border-border">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Icon name="Video" size={20} className="text-primary" />
-                    <strong className="text-sm text-foreground">Проведение встречи</strong>
-                  </div>
-                  <ul className="space-y-1 text-xs text-muted-foreground">
-                    <li>• Анализ речи в реальном времени</li>
-                    <li>• Предложение наводящих вопросов</li>
-                    <li>• Запись ключевых моментов</li>
-                  </ul>
-                </div>
-                <div className="p-4 rounded-lg bg-card border border-border">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Icon name="FileCheck" size={20} className="text-primary" />
-                    <strong className="text-sm text-foreground">После встречи</strong>
-                  </div>
-                  <ul className="space-y-1 text-xs text-muted-foreground">
-                    <li>• Формирование драфта в Word</li>
-                    <li>• Список вопросов и ответов</li>
-                    <li>• Предварительные оценки сроков</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="BarChart3" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Экономия по процессам</h3>
-              </div>
-              <div className="space-y-3">
-                {processes3.map((proc, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-foreground">{proc.name}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{proc.time} → {proc.auto} автоматизации</div>
-                    </div>
-                    <div className="text-lg font-black text-destructive ml-4">{proc.saved}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 p-4 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-between">
-                <span className="text-lg font-bold text-foreground">Итого по Задаче 3:</span>
-                <span className="text-3xl font-black text-primary">13,28 ч/мес</span>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="observe-element hologram-card p-8 mb-8">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="text-5xl">🧠</div>
-            <div className="flex-1">
-              <Badge className="bg-primary/20 text-primary border-primary/50 mb-3">
-                Проект
-              </Badge>
-              <h2 className="text-3xl font-black text-foreground mb-3">
-                Централизованная AI-модель для Бизнес-Аналитиков
-              </h2>
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="p-5 rounded-lg bg-yellow-500/10 border-l-4 border-yellow-500">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Target" className="text-yellow-500" size={24} />
-                <h3 className="text-xl font-bold text-yellow-500">Цель</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed">
-                Полностью освободить БА от рутинных задач — координации, ответов на вопросы, отчётности — чтобы сфокусироваться на содержательной работе.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-lg bg-destructive/10 border-l-4 border-destructive">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="AlertCircle" className="text-destructive" size={24} />
-                <h3 className="text-xl font-bold text-destructive">Проблема</h3>
-              </div>
-              <p className="text-foreground/80 leading-relaxed">
-                На непроизводственные задачи (<em>координация, встречи, отчётность</em>) тратится{' '}
-                <span className="px-2 py-1 bg-yellow-500/20 rounded font-bold">21.75 ч/мес</span> — значительная часть рабочего времени.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-lg bg-secondary/10 border-l-4 border-secondary">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="Package" className="text-secondary" size={24} />
-                <h3 className="text-xl font-bold text-secondary">Что будет в приложении</h3>
-              </div>
-              <div className="grid md:grid-cols-2 gap-3">
-                {[
-                  { icon: 'FileText', title: 'Генерация БТ', desc: 'Основной модуль для написания требований с ИИ-подсказками' },
-                  { icon: 'Users', title: 'Проведение встреч', desc: 'Хранение встреч, вопросов, ответов, протоколов ИИ' },
-                  { icon: 'GitBranch', title: 'Схемы AS IS / TO BE', desc: 'ИИ помогает генерировать диаграммы на основе описания' },
-                  { icon: 'ListChecks', title: 'Тест-кейсы и User Stories', desc: 'Автоматическая генерация по шаблонам' },
-                  { icon: 'Shield', title: 'Проверка БТ', desc: 'ИИ проверяет полноту, логику, соответствие шаблонам' },
-                  { icon: 'BarChart3', title: 'Дайджесты и статистика', desc: 'Еженедельные подборки, рейтинг БА для мотивации' }
-                ].map((item, idx) => (
-                  <div key={idx} className="p-3 rounded-lg bg-card/50 border border-border hover:border-primary/50 transition-colors">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Icon name={item.icon as any} size={16} className="text-primary" />
-                      <strong className="text-sm text-foreground">{item.title}</strong>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-5 rounded-lg bg-accent/10 border-l-4 border-accent">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="BarChart3" className="text-accent" size={24} />
-                <h3 className="text-xl font-bold text-accent">Экономия по процессам</h3>
-              </div>
-              <div className="space-y-2">
-                {processesProject.map((proc, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-card/50 border border-border">
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-foreground">{proc.name}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{proc.time} → {proc.auto} автоматизации</div>
-                    </div>
-                    <div className="text-lg font-black text-destructive ml-4">{proc.saved}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 p-4 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-between">
-                <span className="text-lg font-bold text-foreground">Итого по Проекту:</span>
-                <span className="text-3xl font-black text-primary">27,12 ч/мес</span>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-lg bg-gradient-to-r from-primary/20 to-accent/20 border-2 border-primary/50 cyber-glow">
-              <div className="flex items-center gap-3 mb-4">
-                <Icon name="Trophy" className="text-primary" size={32} />
-                <h3 className="text-2xl font-black text-foreground">Общий потенциал экономии</h3>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">При полной реализации всех задач:</p>
-                  <div className="text-4xl font-black gradient-text">~62 ч/мес</div>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">В реальности (1-й год):</p>
-                  <div className="text-4xl font-black text-secondary">40–50 ч/мес</div>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground mt-4">
-                Эквивалентно <strong className="text-foreground">1 полному рабочему месяцу в год</strong> после адаптации и настройки системы.
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        <footer className="observe-element text-center py-12 mt-12 border-t border-border/50">
-          <div className="inline-block px-6 py-3 rounded-full bg-primary/10 border border-primary/50 mb-4">
-            <div className="flex items-center gap-2">
-              <Icon name="Sparkles" size={20} className="text-primary" />
-              <span className="text-primary font-bold">Готовы начать трансформацию?</span>
-            </div>
-          </div>
-          <p className="text-lg text-muted-foreground">
-            Оптимизируйте работу вашей команды бизнес-аналитиков уже сегодня
-          </p>
-        </footer>
+                )}
+              </Card>
+            );
+          })}
+        </div>
 
       </div>
     </div>
