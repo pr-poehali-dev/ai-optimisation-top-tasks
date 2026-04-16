@@ -1,370 +1,588 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
-interface QAItem {
-  q: string;
-  a: string;
-  num?: string;
-}
+/* ─── toast ───────────────────────────────────────────── */
+const Toast = ({ msg, onClose }: { msg: string; onClose: () => void }) => (
+  <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#1e3a5f] border border-blue-400/40 text-white text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-fade-in">
+    <span className="text-blue-300">ℹ️</span>
+    <span>{msg}</span>
+    <button onClick={onClose} className="ml-2 text-blue-300 hover:text-white transition-colors">✕</button>
+  </div>
+);
 
-interface Block {
-  id: string;
-  emoji: string;
-  title: string;
-  subtitle: string;
-  badge: string;
-  badgeColor: string;
-  items: QAItem[];
-}
-
-const blocks: Block[] = [
-  {
-    id: 'humanitarian',
-    emoji: '🌍',
-    title: 'Гуманитарные вопросы',
-    subtitle: 'Общая суть и проблема',
-    badge: 'БЛОК 1',
-    badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    items: [
-      {
-        num: '1',
-        q: 'Какова цель проекта? В чём его суть — в одном предложении.',
-        a: 'По ходу запросов на консультации и просьб от коллег по созданию для их подразделений ИИ-агентов мы выработали свой подход к их созданию — заточенный на детальном и сложном описании алгоритмов и обширной базы знаний подразделения. Благодаря этому наши агенты дают не просто ответ — а готовое действие для процесса, без кода и IT-доработок.'
-      },
-      {
-        num: '2',
-        q: 'Как появилась идея? Какую конкретную проблему с ИИ-агентами вы решили закрыть?',
-        a: 'При анализе мы обнаружили, что сейчас 89% сотрудников Совкомбанка не используют ИИ-агентов — т.к. не имеют полную картину их функционала и возможностей, а также из-за нерелевантных ответов, связанных с галлюцинациями и отсутствием алгоритмов и баз знаний — меньше доверяют им. Мы решили: перевернуть эту статистику и показать пользователям на своём примере — что через новый механизм продуманных алгоритмов и баз знаний подразделения возможно создать качественного помощника подразделения.'
-      },
-      {
-        num: '3',
-        q: 'Вы выяснили, почему сотрудники не используют ИИ-агенты? И что предлагаете вместо этого?',
-        a: 'Да, не все сотрудники до конца понимают принципы и возможности работы ИИ-агентов, как их настраивать и так далее, из-за чего получают ошибки и не понимают, как их применять в работе. Мы предлагаем им новый подход и механику создания ИИ-агентов для их подразделения — с их базой знаний и выстроенными процессами.'
-      },
-      {
-        num: '4',
-        q: 'Вы создали новый ИИ? Или что делает ваш агент полезным — в отличие от «Совы» или «Дипсикой»?',
-        a: 'Нет, мы не создали новый ИИ — мы разработали собственную механику по созданию специализированных ИИ-агентов подразделений, которые работают в привычных системах и дают релевантный ответ, который соответствует рабочим процессам направления.'
-      },
-      {
-        num: '5',
-        q: 'Почему не просто дали инструкции, а создали своих агентов? Что не сработало в старом подходе?',
-        a: 'Не для всех ИИ-агентов имеются инструкции и руководства использования, и зачастую сотрудники хотят создать ИИ-агента конкретно для своего подразделения, но не до конца знают, как это сделать максимально качественно. В обычных ИИ-агентах сейчас — мало того что они подходят не всем подразделениям — в них зачастую отсутствует база знаний подразделения, из-за чего у ИИ не хватает контекста по процессам.'
-      },
-      {
-        num: '6',
-        q: 'Есть ли уже реальный эффект? Приведите 1–2 конкретных примера с цифрами.',
-        a: 'Да, мы уже реализовали в начале марта 2 специализированных ИИ-агента:\n\n• Универсальный ассистент для Бизнес и Системных аналитиков — в месяц принес выгоды в 248 тысяч рублей и помог написать порядка 11 Бизнес-Требований.\n\n• ИИ-агент для Руководителей и рекрутеров HR — за месяц оптимизировал время сотрудников на 600 человеко-часов в разрезе 50 сотрудников.'
-      },
-    ]
-  },
-  {
-    id: 'novelty',
-    emoji: '🚀',
-    title: 'Вопросы к новизне',
-    subtitle: 'Что вы сделали уникального',
-    badge: 'БЛОК 2',
-    badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    items: [
-      {
-        num: '7',
-        q: 'В чём новизна? Чем ваши «специализированные агенты» отличаются от «Совы» или «Бизнес-Аналитика»?',
-        a: 'Наши агенты отличаются механикой создания — у обычных ИИ-агентов отсутствует детальная база знаний подразделения и сложные алгоритмы. Наши агенты выдают релевантный ответ, который можно использовать в реальном рабочем процессе.'
-      },
-      {
-        num: '8',
-        q: 'Что вы сделали такого, чего раньше не было?',
-        a: 'Мы создали персонализированных ИИ-агентов, встроенных в рабочие процессы без кода, с детализированными алгоритмами и базой знаний под каждое подразделение. Это не «чат-бот», а цифровой сотрудник, который знает вашу работу.'
-      },
-      {
-        num: '9',
-        q: 'Почему это не просто «еще один ИИ-ассистент»?',
-        a: 'Потому что мы не просто даем инструмент — мы перестраиваем парадигму: от «как использовать ИИ» к «ИИ сам работает за тебя». Без IT, без обучения, без ошибок — только результат.'
-      },
-      {
-        num: '10',
-        q: 'Что делает ваш проект уникальным и куда и как вы планируете масштабироваться?',
-        a: 'Уникальность — в экосистеме персонализированных агентов, которые можно масштабировать под любое подразделение, сохраняя специфику, без потери качества и с быстрым внедрением. Масштабируем через конструктор — не копируем, адаптируем.'
-      },
-      {
-        num: '11',
-        q: 'Почему вы называете это «новым механизмом»? Что в нём принципиально нового?',
-        a: 'Потому что мы объединили три ключевых элемента: 1) Персонализация под процесс, 2) Внедрение без кода, 3) Работа на собственной базе знаний. Это не просто ИИ — это ИИ, адаптированный под бизнес-реальность.'
-      },
-    ]
-  },
-  {
-    id: 'metrics',
-    emoji: '📊',
-    title: 'Расчёты, внедрение и масштабирование',
-    subtitle: 'Измеримость и реализуемость',
-    badge: 'БЛОК 3',
-    badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30',
-    items: [
-      {
-        num: '12',
-        q: 'Как вы измеряете экономию? Есть ли замеры? Приведите методологию.',
-        a: 'Через время на задачу до и после внедрения агента. Например: HR-агент сократил время на подбор на 28,2%, андеррайтер — на 45%. Это реальные данные из пилотов — не прогнозы.'
-      },
-      {
-        num: '13',
-        q: 'Сколько времени нужно, чтобы внедрить агента в новое подразделение?',
-        a: 'От 1 до 5 дней — в зависимости от сложности. Мы не пишем код — мы настраиваем агента на их процессы, термины и базу знаний. Внедрение — в привычной системе, без IT-доработок.'
-      },
-      {
-        num: '14',
-        q: 'Как вы будете переиспользовать агентов? Как масштабируете на 100+ подразделений, если у каждого своя специфика?',
-        a: 'Мы не переиспользуем агентов — мы переиспользуем конструктор и шаблоны. Например, агент для HR можно адаптировать для бухгалтерии — заменив базу знаний и алгоритмы. Это модульная система, а не копирование.'
-      },
-      {
-        num: '15',
-        q: 'Собирали ли вы обратную связь? Каким образом? Какие метрики используете?',
-        a: 'Через автоматизированные опросы после каждого использования, аналитику по времени выполнения задач и прямую обратную связь от пользователей. Измеряем: снижение времени, рост качества, снижение ошибок.'
-      },
-      {
-        num: '16',
-        q: 'Вы заявили 460 млн ₽ в год. Что для этого необходимо? Какие критерии?',
-        a: 'Нужно: 1) Внедрить агентов в 100+ подразделений, 2) Сократить время на рутинные задачи на 30–50%, 3) Перевести 50% сотрудников на работу с ИИ-агентами. Это реалистичный расчет на основе пилотов — не фантазия, а математика.'
-      },
-      {
-        num: '17',
-        q: 'Если подразделение захочет своего агента — им нужно обращаться к вам? Какой процесс?',
-        a: 'Да: сотрудник обращается — мы проводим 1-часовую сессию, выявляем его задачи, создаем агента за 1–3 дня, внедряем в его систему. Нет бюрократии — есть результат.'
-      },
-      {
-        num: '18',
-        q: 'Недавно было обучение по Цифровым двойникам. Чем ваш Цифровой двойник андеррайтера отличается от того, что показывали?',
-        a: 'Мы не просто копируем — мы автоматизируем 45% рутинных задач, работаем в Pyrus, без кода, с базой знаний. Экономия — 2,06 млн ₽ в год. Это не демонстрация — это работающий пилот.'
-      },
-    ]
-  },
-  {
-    id: 'underwriter',
-    emoji: '📌',
-    title: 'ИИ-агент Андеррайтер',
-    subtitle: 'Детальные вопросы по агенту',
-    badge: 'АГЕНТ',
-    badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    items: [
-      {
-        num: 'В1',
-        q: 'Откуда коэффициент 1.4?',
-        a: 'Стандартный отраслевой коэффициент полной стоимости труда: НДФЛ (13%) + страховые взносы (30%) + рабочее место, ПО, административные расходы. Итого ~40% сверх ФОТ — применяется как норматив в планово-экономических расчётах СГ.'
-      },
-      {
-        num: 'В2',
-        q: 'Откуда 3 000 ч.ч./год?',
-        a: 'Данные из двух источников: статистика Pyrus по шифрам 520/521 + хронометраж операций через интервью с андеррайтерами. Две точки верификации снижают погрешность.'
-      },
-      {
-        num: 'В3',
-        q: 'Почему именно 45% оптимизации?',
-        a: 'Расчёт по рутинным операциям (обработка заявок, проверка документов), поддающимся автоматизации. Сложные решения не включены. 45% — взвешенная оценка по 3 уровням должностей.'
-      },
-      {
-        num: 'В4',
-        q: 'Как агент интегрируется с Pyrus технически?',
-        a: 'Работает как ИИ-ассистент поверх Pyrus — без доработки IT-систем, без кода. Взаимодействие через чат, данные подтягиваются вручную или через буфер. IT-затраты не включены — чтобы показать чистый эффект.'
-      },
-      {
-        num: 'В5',
-        q: 'Все ли 10 сотрудников работают с агентом одинаково?',
-        a: 'Нет. Основной эффект — на 7 андеррайтерах с высокой долей рутины. Начальники и главный — в аналитике. 45% — средневзвешенная по всему подразделению.'
-      },
-    ]
-  },
-  {
-    id: 'twin',
-    emoji: '📌',
-    title: 'Конструктор цифрового двойника',
-    subtitle: 'Персонализированный ИИ-агент сотрудника',
-    badge: 'АГЕНТ',
-    badgeColor: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    items: [
-      {
-        num: 'В6',
-        q: 'Как верифицировались 15 658 пользователей?',
-        a: 'Среднесуточное количество активных пользователей Pyrus — фактическая цифра из внутренней статистики Совкомбанка.'
-      },
-      {
-        num: 'В7',
-        q: 'Что значит «ограничение проекта» для 5%?',
-        a: 'Два фактора: (1) поэтапное развёртывание — не все получат доступ сразу; (2) ограниченный перечень автоматизируемых процессов на старте. 5% — консервативная оценка первого года.'
-      },
-      {
-        num: 'В8',
-        q: 'Как рассчитана ставка 600 ₽/ч?',
-        a: 'Средневзвешенная ставка по всем пользователям Pyrus — включает линейных сотрудников, ТОПов и аналитиков. Использование единой ставки оправдано — экономия считается по всему массиву.'
-      },
-      {
-        num: 'В9',
-        q: 'Какова окупаемость при 345 млн ₽ экономии?',
-        a: 'Агент реализован без IT-затрат и кода — стоимость внедрения минимальна (методология, обучение, сопровождение). Срок окупаемости — менее одного квартала.'
-      },
-      {
-        num: 'В10',
-        q: 'Как будет измеряться реальная экономия?',
-        a: 'Базовый замер — среднее время на процессы в Pyrus до запуска агента (хронометраж/опрос). После — повторный замер через 3 месяца. Дополнительный индикатор: количество обращений к агенту и закрытых задач через него.'
-      },
-    ]
-  },
-  {
-    id: 'hr',
-    emoji: '📌',
-    title: 'ИИ-агент HR',
-    subtitle: 'Рекрутеры и руководители',
-    badge: 'АГЕНТ',
-    badgeColor: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
-    items: [
-      {
-        num: 'В11',
-        q: 'Что входит в 7 минут на резюме для руководителя?',
-        a: 'Полный цикл: открыть, прочитать, оценить соответствие, принять решение. С ИИ — агент выдаёт готовый скоринг за 1,5 минуты, руководитель только верифицирует.'
-      },
-      {
-        num: 'В12',
-        q: 'Откуда 165 127 резюме в год?',
-        a: 'Данные из двух источников: внутренняя статистика HH.ru по аккаунту СГ + данные Страховой Группы по количеству закрытых и открытых вакансий. Реферальные и прямой поиск — незначительная доля.'
-      },
-      {
-        num: 'В13',
-        q: 'Почему 10% для большинства процессов?',
-        a: 'Консервативная единая оценка для операций, где ИИ — помощник, а не замена: генерирует черновик, структурирует, предлагает. Финальное решение — за HR. Для анализа резюме оптимизация выше — 54–55%.'
-      },
-      {
-        num: 'В14',
-        q: 'Что происходит с высвободившимися 7 692 ч.ч.?',
-        a: 'Сокращения не планируются. Время перераспределяется на качественные задачи: глубокая работа с кандидатами, развитие HR-бренда, аналитика подбора. Экономия — через стоимость труда, не через сокращение.'
-      },
-      {
-        num: 'В15',
-        q: 'Как защищаются персональные данные кандидатов?',
-        a: 'Агент работает с обезличенными или агрегированными данными в рамках существующей инфраструктуры СГ. Видеозаписи анализируются только с согласия кандидата. Соответствие 152-ФЗ обеспечивается регламентами HR-процессов.'
-      },
-    ]
-  },
-  {
-    id: 'ba',
-    emoji: '📌',
-    title: 'ИИ-агент BA',
-    subtitle: 'Бизнес-аналитики',
-    badge: 'АГЕНТ',
-    badgeColor: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    items: [
-      {
-        num: 'В16',
-        q: 'За счёт чего прирост с 812 до 955 БТ в год?',
-        a: 'Агент ускоряет трудоёмкие этапы: генерацию вопросов, оформление встреч, написание разделов БТ. Высвобождённые часы направляются на новые задачи — отсюда прирост выработки на 17,6% без увеличения штата.'
-      },
-      {
-        num: 'В17',
-        q: 'Почему к БА не применяется коэффициент 1.4?',
-        a: 'В расчёте по БА используется прямая стоимость труда (718,75 ₽/ч) — методологически более консервативный подход. Итоговая экономия занижена — реальный эффект будет выше.'
-      },
-      {
-        num: 'В18',
-        q: 'Какова суммарная экономия по Банку и СГ вместе?',
-        a: 'По СГ — 2 977 546 ₽/год. По Банку данные рассчитываются отдельно с учётом другого состава команды и ставок. Совокупный эффект по агенту BA превышает 3 млн ₽ в год при минимальных затратах на внедрение.'
-      },
-      {
-        num: 'В19',
-        q: 'Кто контролирует качество БТ с ИИ?',
-        a: 'Агент не пишет БТ самостоятельно — он генерирует структуру, разделы и вопросы, которые БА дорабатывает и валидирует. Качество контролируется через стандартный процесс согласования БТ с заказчиком и системным аналитиком — он не меняется с внедрением ИИ.'
-      },
-    ]
-  },
-];
-
-const QACard = ({ item }: { item: QAItem }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <div
-      className={`rounded-xl border transition-all duration-300 cursor-pointer ${open ? 'border-primary/50 bg-primary/5' : 'border-border bg-card/40 hover:border-border/80 hover:bg-card/60'}`}
-      onClick={() => setOpen(!open)}
-    >
-      <div className="flex items-start gap-3 p-4">
-        <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-muted text-xs font-bold text-muted-foreground">
-          {item.num}
-        </span>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-foreground leading-snug">{item.q}</p>
-          {open && (
-            <div className="mt-3 pt-3 border-t border-border/60">
-              {item.a.split('\n\n').map((para, i) => (
-                <p key={i} className="text-sm text-muted-foreground leading-relaxed mb-2 last:mb-0">{para}</p>
-              ))}
-            </div>
-          )}
+/* ─── phone frame ─────────────────────────────────────── */
+const PhoneFrame = ({ children, bg = '#060d1a' }: { children: React.ReactNode; bg?: string }) => (
+  <div className="relative mx-auto w-[300px] flex-shrink-0">
+    <div className="rounded-[2.4rem] border-[5px] border-slate-700 shadow-[0_0_60px_rgba(59,130,246,0.18)] overflow-hidden">
+      <div className="flex items-center justify-between px-5 pt-3 pb-1 text-[10px] text-white/50" style={{ background: bg }}>
+        <span>9:41</span>
+        <div className="flex gap-1.5 items-center">
+          <Icon name="Wifi" size={10} />
+          <Icon name="Battery" size={10} />
         </div>
-        <Icon
-          name={open ? 'ChevronUp' : 'ChevronDown'}
-          size={16}
-          className={`flex-shrink-0 mt-1 transition-colors ${open ? 'text-primary' : 'text-muted-foreground'}`}
-        />
+      </div>
+      <div className="overflow-y-auto" style={{ height: 560, background: bg }}>
+        {children}
+      </div>
+      <div className="flex justify-center py-2" style={{ background: bg }}>
+        <div className="w-20 h-1 bg-white/15 rounded-full" />
+      </div>
+    </div>
+  </div>
+);
+
+/* ─── section wrapper ─────────────────────────────────── */
+const Section = ({ id, num, emoji, title, goal, children }: {
+  id: string; num: string; emoji: string; title: string; goal: string; children: React.ReactNode;
+}) => (
+  <section id={id} className="mb-24">
+    <div className="flex items-center gap-4 mb-6">
+      <div className="w-11 h-11 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-xl">{emoji}</div>
+      <div>
+        <p className="text-[10px] text-blue-400 font-bold tracking-widest uppercase">{num}</p>
+        <h2 className="text-xl font-black text-white leading-tight">{title}</h2>
+      </div>
+    </div>
+    <div className="flex items-start gap-2 bg-blue-500/5 border border-blue-500/15 rounded-xl px-4 py-2.5 mb-8 text-sm text-blue-200/60">
+      <span className="text-blue-400 font-semibold flex-shrink-0">Цель:</span>
+      <span>{goal}</span>
+    </div>
+    {children}
+  </section>
+);
+
+/* ─── widget description ──────────────────────────────── */
+const WDesc = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="flex-1 min-w-0">
+    <h4 className="text-sm font-bold text-white mb-2">{title}</h4>
+    <div className="text-[13px] text-slate-400 leading-relaxed space-y-1.5">{children}</div>
+  </div>
+);
+
+/* ─── mini button ─────────────────────────────────────── */
+const Btn = ({ label, onClick, c = 'blue' }: { label: string; onClick: () => void; c?: string }) => {
+  const cls: Record<string, string> = {
+    blue: 'bg-blue-500 hover:bg-blue-400 text-white',
+    green: 'bg-emerald-500 hover:bg-emerald-400 text-white',
+    yellow: 'bg-amber-500 hover:bg-amber-400 text-white',
+    red: 'bg-red-500 hover:bg-red-400 text-white',
+    purple: 'bg-purple-500 hover:bg-purple-400 text-white',
+    ghost: 'bg-white/8 hover:bg-white/15 text-white border border-white/15',
+  };
+  return (
+    <button onClick={onClick} className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all active:scale-95 ${cls[c] ?? cls.blue}`}>
+      {label}
+    </button>
+  );
+};
+
+/* ─── index bar widget ────────────────────────────────── */
+const IndexBar = ({ value, onClick }: { value: number; onClick: () => void }) => {
+  const col = value >= 71 ? '#10b981' : value >= 41 ? '#f59e0b' : '#ef4444';
+  const lbl = value >= 71 ? '🟢 Отлично' : value >= 41 ? '🟡 Внимание' : '🔴 Критический';
+  return (
+    <div className="bg-white/5 rounded-xl p-3 cursor-pointer group" onClick={onClick}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] text-white/40">Индекс защиты</span>
+        <span className="text-[10px] font-bold" style={{ color: col }}>{lbl}</span>
+      </div>
+      <div className="flex items-end gap-2 mb-2">
+        <span className="text-3xl font-black text-white">{value}</span>
+        <span className="text-[10px] text-white/30 mb-0.5">/100</span>
+      </div>
+      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${value}%`, background: col }} />
+      </div>
+      <div className="mt-2 hidden group-hover:grid grid-cols-2 gap-1 text-[9px] text-white/50 border-t border-white/10 pt-2">
+        <span>🫁 Здоровье: <b className="text-white">65</b></span>
+        <span>🚗 Авто: <b className="text-white">80</b></span>
+        <span>🏠 Имущество: <b className="text-white">50</b></span>
+        <span>💼 Доход: <b className="text-white">70</b></span>
       </div>
     </div>
   );
 };
 
-const Index = () => {
-  const [activeBlock, setActiveBlock] = useState<string | null>(null);
+/* ════════════════════════════════════════════════════════
+   MAIN
+════════════════════════════════════════════════════════ */
+export default function Index() {
+  const [toast, setToast] = useState('');
+  const say = (m: string) => { setToast(m); setTimeout(() => setToast(''), 3000); };
+
+  const nav = [
+    { id: 'sc1', e: '📱', l: 'Финансовое здоровье' },
+    { id: 'sc2', e: '📈', l: 'Путь к цели' },
+    { id: 'sc3', e: '💸', l: 'Мой поток' },
+    { id: 'sc4', e: '🛡️', l: 'Финансовый сон' },
+    { id: 'sc5', e: '📊', l: 'Карма и контроль' },
+    { id: 'sc6', e: '🎯', l: 'Статусы' },
+    { id: 'sc7', e: '🔐', l: 'Зона контроля' },
+  ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(66,153,225,0.07),transparent_50%)] pointer-events-none" />
+    <div className="min-h-screen bg-[#060d1a] text-white">
+      {toast && <Toast msg={toast} onClose={() => setToast('')} />}
 
-      <div className="container mx-auto px-4 py-10 max-w-4xl relative z-10">
-
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/40 rounded-full bg-primary/10 mb-5">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-            <span className="text-xs text-primary font-semibold tracking-widest uppercase">Лига достижений</span>
+      {/* HERO */}
+      <div className="relative overflow-hidden border-b border-blue-500/10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-20%,rgba(59,130,246,0.14),transparent_65%)]" />
+        <div className="container mx-auto px-6 py-16 max-w-5xl text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-500/25 bg-blue-500/8 mb-6 text-[11px] text-blue-300 font-bold tracking-wider uppercase">
+            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" />
+            Страховой Совкомбанк · Мобильное приложение
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-3 gradient-text">Вопросы и ответы</h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Нажмите на вопрос, чтобы раскрыть ответ
-          </p>
+          <h1 className="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-br from-white via-blue-100 to-blue-400 bg-clip-text text-transparent">
+            Финтрекер
+          </h1>
+          <p className="text-lg text-slate-400 max-w-lg mx-auto mb-2">Страховая версия модуля финансового здоровья</p>
+          <p className="text-sm text-slate-600">Интерактивная концепция · Презентация функционала</p>
         </div>
+      </div>
 
-        <div className="space-y-6">
-          {blocks.map((block) => {
-            const isOpen = activeBlock === block.id;
-            return (
-              <Card key={block.id} className="hologram-card overflow-hidden">
-                <button
-                  className="w-full text-left p-6 flex items-center gap-4"
-                  onClick={() => setActiveBlock(isOpen ? null : block.id)}
-                >
-                  <span className="text-3xl">{block.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <Badge className={`text-xs border ${block.badgeColor}`}>{block.badge}</Badge>
+      {/* NAV */}
+      <nav className="sticky top-0 z-40 bg-[#060d1a]/92 backdrop-blur-xl border-b border-blue-500/8">
+        <div className="container mx-auto px-4 max-w-5xl flex overflow-x-auto gap-0.5 py-2">
+          {nav.map(n => (
+            <button key={n.id} onClick={() => document.getElementById(n.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-500 hover:text-white hover:bg-blue-500/12 transition-all whitespace-nowrap">
+              <span>{n.e}</span>{n.l}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <div className="container mx-auto px-4 py-16 max-w-5xl">
+
+        {/* ══ SCREEN 1 ══════════════════════════════════════ */}
+        <Section id="sc1" num="Раздел 1" emoji="📱" title="Главный экран: «Финансовое здоровье»"
+          goal="Показать клиенту общий уровень защиты — от потери денег, здоровья, имущества, дохода.">
+
+          {/* 1.1 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start mb-14">
+            <PhoneFrame>
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">🫀 Индекс защиты</p>
+                <IndexBar value={72} onClick={() => say('Переход: раздел «Финансовый сон»')} />
+                <Btn label="Проверить защиту →" onClick={() => say('Открываем раздел «Финансовый сон»')} />
+              </div>
+            </PhoneFrame>
+            <WDesc title="1.1 🫀 Индекс защиты">
+              <p>Общий показатель уровня страховой защиты (0–100), рассчитанный на основе наличия полисов, покрытия рисков и своевременности оплаты.</p>
+              <p>
+                <span className="text-red-400">0–40 🔴 Критический</span> ·{' '}
+                <span className="text-amber-400">41–70 🟡 Внимание</span> ·{' '}
+                <span className="text-emerald-400">71–100 🟢 Отлично</span>
+              </p>
+              <p className="text-slate-500 italic">Hover → разбивка: Здоровье 65, Авто 80, Имущество 50, Доход 70.</p>
+              <p><span className="text-blue-400">Кнопка:</span> «Проверить защиту» → раздел «Финансовый сон».</p>
+            </WDesc>
+          </div>
+
+          {/* 1.2 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start mb-14">
+            <PhoneFrame>
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">🛡️ Запас защиты</p>
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Переход: Накопления + защита')}>
+                  <div className="flex items-end gap-1.5 mb-1">
+                    <span className="text-5xl font-black text-emerald-400">6</span>
+                    <span className="text-xs text-white/40 mb-1.5">месяцев 🟢</span>
+                  </div>
+                  <p className="text-[10px] text-white/50">Подушки хватит на 6 месяцев</p>
+                  <div className="hidden group-hover:flex gap-4 text-[9px] text-white/40 border-t border-white/10 pt-2 mt-2">
+                    <span>Накопления: <b className="text-white">3 мес</b></span>
+                    <span>Покрытие: <b className="text-white">3 мес</b></span>
+                  </div>
+                </div>
+                <Btn label="Увеличить запас →" onClick={() => say('Переход: Накопления + защита')} c="green" />
+              </div>
+            </PhoneFrame>
+            <WDesc title="1.2 🛡️ Запас защиты">
+              <p>Сколько месяцев клиент может прожить без дохода при активных полисах и накоплениях.</p>
+              <p className="font-mono text-[11px] bg-white/5 rounded-lg px-3 py-1.5 text-white/60">(Накопления + Покрытие) / Расходы в месяц</p>
+              <p>
+                <span className="text-red-400">&lt;3 мес 🔴</span> · <span className="text-amber-400">3–6 мес 🟡</span> · <span className="text-emerald-400">6+ мес 🟢</span>
+              </p>
+              <p><span className="text-blue-400">Кнопка:</span> «Увеличить запас» → Финансовый сон → Накопления + защита.</p>
+            </WDesc>
+          </div>
+
+          {/* 1.3 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <PhoneFrame>
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">📉 Темп рисков</p>
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Переход: Защита от неожиданностей')}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-amber-400 font-bold text-xs">⚡ Турбулентный</span>
+                    <span className="text-[9px] text-white/30">3 мес</span>
+                  </div>
+                  <svg viewBox="0 0 200 44" className="w-full h-11 mb-1">
+                    <polyline points="0,38 40,32 80,18 120,26 160,12 200,22" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="200" cy="22" r="3.5" fill="#f59e0b" />
+                  </svg>
+                  <p className="hidden group-hover:block text-[9px] text-amber-300 border-t border-white/10 pt-2 mt-1">Вы совершили 5 поездок за 2 месяца. Рекомендуем ВЗР.</p>
+                </div>
+                <Btn label="Проверить риски →" onClick={() => say('Переход: Защита от неожиданностей')} c="yellow" />
+              </div>
+            </PhoneFrame>
+            <WDesc title="1.3 📉 Темп рисков">
+              <p>Динамика рисковой нагрузки за 3 месяца. Статус: «Турбулентный» / «Комфортный» / «Спокойный».</p>
+              <p className="text-slate-500 italic">Hover → контекстная подсказка и рекомендация продукта (ВЗР).</p>
+              <p><span className="text-blue-400">Кнопка:</span> «Проверить риски» → Финансовый сон → Защита от неожиданностей.</p>
+            </WDesc>
+          </div>
+        </Section>
+
+        {/* ══ SCREEN 2 ══════════════════════════════════════ */}
+        <Section id="sc2" num="Раздел 2" emoji="📈" title="Путь к цели"
+          goal="Показать, как страхование защищает цели клиента на пути к их достижению.">
+
+          {/* 2.1 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start mb-14">
+            <PhoneFrame>
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">✈️ Цель: Париж</p>
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Открываем оформление ВЗР')}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-white">✈️ Париж</span>
+                    <span className="text-[10px] text-emerald-400 font-bold">65%</span>
+                  </div>
+                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-2">
+                    <div className="h-full w-[65%] bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full" />
+                  </div>
+                  <div className="flex justify-between text-[9px] text-white/40 mb-1">
+                    <span>80 000 ₽ из 120 000 ₽</span>
+                    <span>177 дней</span>
+                  </div>
+                  <p className="hidden group-hover:block text-[9px] text-amber-300 border-t border-white/10 pt-2 mt-1">Оформите ВЗР за 850 ₽, чтобы защитить поездку.</p>
+                </div>
+                <Btn label="Добавить защиту →" onClick={() => say('Открываем оформление ВЗР')} />
+              </div>
+            </PhoneFrame>
+            <WDesc title="2.1 ✈️ Цель: Париж">
+              <p>Прогресс накоплений с привязанной рекомендацией страхового продукта для защиты цели.</p>
+              <p className="text-slate-500 italic">Hover → «Оформите ВЗР за 850 ₽, чтобы защитить поездку.»</p>
+              <p><span className="text-blue-400">Кнопка:</span> «Добавить защиту» → интерфейс оформления ВЗР.</p>
+            </WDesc>
+          </div>
+
+          {/* 2.2 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <PhoneFrame>
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">📈 Накопления + защита</p>
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Переход: Накопления + защита')}>
+                  <p className="text-[9px] text-white/40 mb-2">Динамика 6 мес · Страхование добавило +10% к росту</p>
+                  <svg viewBox="0 0 200 56" className="w-full h-14 mb-2">
+                    <polyline points="0,52 40,44 80,35 120,26 160,18 200,10" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
+                    {[0,40,80,120,160,200].map((x,i) => (
+                      <rect key={i} x={x-7} y={52-(i*7+4)} width={14} height={i*7+4} fill="rgba(16,185,129,0.25)" rx="2" />
+                    ))}
+                  </svg>
+                  <div className="flex gap-4 text-[9px] text-white/40">
+                    <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-blue-400 inline-block rounded" />Накопления</span>
+                    <span className="flex items-center gap-1"><span className="w-3 h-2.5 bg-emerald-400/40 inline-block rounded" />Покрытие</span>
+                  </div>
+                  <p className="hidden group-hover:block text-[9px] text-emerald-300 border-t border-white/10 pt-2 mt-2">Благодаря НСЖ вы накопили на 5 000 ₽ больше.</p>
+                </div>
+                <Btn label="Увеличить защиту →" onClick={() => say('Переход: Накопления + защита')} c="green" />
+              </div>
+            </PhoneFrame>
+            <WDesc title="2.2 📈 Динамика накоплений + защита">
+              <p>Комбинированный график: линия роста накоплений + столбцы страхового покрытия НСЖ.</p>
+              <p className="text-slate-500 italic">Hover → «Благодаря НСЖ вы накопили на 5 000 ₽ больше.»</p>
+              <p><span className="text-blue-400">Кнопка:</span> «Увеличить защиту» → Финансовый сон → Накопления + защита.</p>
+            </WDesc>
+          </div>
+        </Section>
+
+        {/* ══ SCREEN 3 ══════════════════════════════════════ */}
+        <Section id="sc3" num="Раздел 3" emoji="💸" title="Мой поток"
+          goal="Показать, как страхование защищает расходы клиента от непредвиденных потерь.">
+
+          {/* 3.1 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start mb-14">
+            <PhoneFrame bg="#080f1f">
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">🛒 Защита покупок</p>
+                {[
+                  { name: 'Ноутбук', price: '50 000 ₽', ok: false, tip: 'Защитите от поломки за 150 ₽' },
+                  { name: 'Смартфон', price: '30 000 ₽', ok: true, tip: '' },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white/5 rounded-xl p-3 flex items-center justify-between group cursor-pointer"
+                    onClick={() => say(item.ok ? `${item.name} уже защищён` : `Оформляем страховку на ${item.name}`)}>
+                    <div>
+                      <p className="text-[11px] font-semibold text-white">{item.name}</p>
+                      <p className="text-[9px] text-white/35">{item.price}</p>
+                      {!item.ok && <p className="hidden group-hover:block text-[9px] text-amber-300 mt-0.5">{item.tip}</p>}
                     </div>
-                    <div className="text-lg font-black text-foreground">{block.title}</div>
-                    <div className="text-sm text-muted-foreground">{block.subtitle}</div>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${item.ok ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
+                      {item.ok ? '✓ Защищено' : '✕ Риск'}
+                    </span>
                   </div>
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-primary/20 rotate-180' : 'bg-muted'}`}>
-                    <Icon name="ChevronDown" size={18} className={isOpen ? 'text-primary' : 'text-muted-foreground'} />
-                  </div>
-                </button>
+                ))}
+                <Btn label="Защитить →" onClick={() => say('Открываем страхование покупок')} />
+              </div>
+            </PhoneFrame>
+            <WDesc title="3.1 🛒 Защита покупок">
+              <p>Список крупных покупок с маркировкой «Защищено» / «Риск». Проактивный оффер в нужный момент.</p>
+              <p className="text-slate-500 italic">Hover → «Защитите ноутбук от поломки за 150 ₽.»</p>
+              <p><span className="text-blue-400">Кнопка:</span> «Защитить» → интерфейс страхования покупок.</p>
+            </WDesc>
+          </div>
 
-                {isOpen && (
-                  <div className="px-6 pb-6 space-y-3 border-t border-border/50 pt-5">
-                    {block.items.map((item, idx) => (
-                      <QACard key={idx} item={item} />
+          {/* 3.2 */}
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <PhoneFrame bg="#080f1f">
+              <div className="px-4 pt-4 pb-6 space-y-3">
+                <p className="text-[10px] text-white/35 uppercase tracking-widest font-bold">📊 Категории рисков</p>
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Открываем страхование здоровья')}>
+                  {[
+                    { l: 'Здоровье', p: 40, col: '#ef4444' },
+                    { l: 'Авто', p: 30, col: '#3b82f6' },
+                    { l: 'Имущество', p: 20, col: '#8b5cf6' },
+                    { l: 'Доход', p: 10, col: '#f59e0b' },
+                  ].map((c, i) => (
+                    <div key={i} className="mb-2">
+                      <div className="flex justify-between text-[9px] text-white/50 mb-0.5">
+                        <span>{c.l}</span><span className="font-bold text-white">{c.p}%</span>
+                      </div>
+                      <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${c.p}%`, background: c.col }} />
+                      </div>
+                    </div>
+                  ))}
+                  <p className="hidden group-hover:block text-[9px] text-red-300 border-t border-white/10 pt-2 mt-1">40% рисков — здоровье. Рекомендуем страхование здоровья.</p>
+                </div>
+                <Btn label="Оформить страхование →" onClick={() => say('Открываем страхование здоровья')} c="red" />
+              </div>
+            </PhoneFrame>
+            <WDesc title="3.2 📊 Категории рисков">
+              <p>Диаграмма рисковой нагрузки по 4 категориям с контекстной рекомендацией страхового продукта.</p>
+              <p className="text-slate-500 italic">Hover → «40% рисков — здоровье. Рекомендуем страхование.»</p>
+              <p><span className="text-blue-400">Кнопка:</span> «Оформить» → страхование здоровья.</p>
+            </WDesc>
+          </div>
+        </Section>
+
+        {/* ══ SCREEN 4 ══════════════════════════════════════ */}
+        <Section id="sc4" num="Раздел 4" emoji="🛡️" title="Финансовый сон"
+          goal="Показать клиенту уровень защиты от будущих рисков — здоровье, имущество, доход.">
+
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <PhoneFrame bg="#050c1a">
+              <div className="px-3 pt-4 pb-6 space-y-2.5">
+                {/* 4.1 */}
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Переход: Накопления + защита')}>
+                  <p className="text-[9px] text-white/35 mb-1">💤 Запас спокойствия</p>
+                  <div className="flex items-end gap-1.5">
+                    <span className="text-3xl font-black text-emerald-400">6</span>
+                    <span className="text-[10px] text-white/40 mb-0.5">мес 🟢</span>
+                  </div>
+                  <div className="hidden group-hover:flex gap-3 text-[9px] text-white/40 border-t border-white/10 pt-1.5 mt-1">
+                    <span>Накопления: <b className="text-white">3 мес</b></span>
+                    <span>Покрытие: <b className="text-white">3 мес</b></span>
+                  </div>
+                </div>
+                {/* 4.2 */}
+                <IndexBar value={72} onClick={() => say('Проверяем защиту')} />
+                {/* 4.3 */}
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Открываем пролонгацию')}>
+                  <p className="text-[9px] text-white/35 mb-2">📅 Пролонгация полисов</p>
+                  {[
+                    { name: 'ОСАГО', date: '15.06.2025' },
+                    { name: 'КАСКО', date: '20.07.2025' },
+                  ].map((p, i) => (
+                    <div key={i} className="flex items-center justify-between mb-1.5">
+                      <div>
+                        <span className="text-[10px] font-semibold text-white">{p.name}</span>
+                        <span className="text-[9px] text-white/35 ml-2">{p.date}</span>
+                      </div>
+                      <span className="text-[9px] text-amber-400 font-bold">⚠ Продление</span>
+                    </div>
+                  ))}
+                  <p className="hidden group-hover:block text-[9px] text-amber-300 border-t border-white/10 pt-1.5 mt-1">Пролонгируйте ОСАГО, чтобы избежать штрафа.</p>
+                </div>
+                <Btn label="Продлить полисы →" onClick={() => say('Открываем пролонгацию')} c="yellow" />
+              </div>
+            </PhoneFrame>
+            <div className="flex-1 space-y-5">
+              <WDesc title="4.1 💤 Запас спокойствия">
+                <p>Месяцы без дохода при работающих полисах. Hover → источники запаса.</p>
+              </WDesc>
+              <WDesc title="4.2 🛡️ Индекс защиты">
+                <p>Шкала 0–100 с цветовой индикацией и разбивкой по категориям при наведении.</p>
+                <p><span className="text-blue-400">Кнопка:</span> «Проверить защиту» → текущий раздел.</p>
+              </WDesc>
+              <WDesc title="4.3 📅 Пролонгация полисов">
+                <p>Список полисов, истекающих в ближайшие 30 дней. Проактивное напоминание.</p>
+                <p className="text-slate-500 italic">Hover → «Пролонгируйте ОСАГО, чтобы избежать штрафа.»</p>
+                <p><span className="text-blue-400">Кнопка:</span> «Продлить» → интерфейс пролонгации.</p>
+              </WDesc>
+            </div>
+          </div>
+        </Section>
+
+        {/* ══ SCREEN 5 ══════════════════════════════════════ */}
+        <Section id="sc5" num="Раздел 5" emoji="📊" title="Карма и контроль"
+          goal="Показать уровень финансовой репутации и безопасности клиента.">
+
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <PhoneFrame bg="#060e1d">
+              <div className="px-3 pt-4 pb-6 space-y-2.5">
+                {/* 5.1 */}
+                <div className="bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border border-amber-500/18 rounded-xl p-3 group cursor-pointer"
+                  onClick={() => say('Открываем интерфейс «Поделиться»')}>
+                  <p className="text-[9px] text-white/35 mb-1">📈 Карма</p>
+                  <div className="flex items-end gap-2">
+                    <span className="text-4xl font-black text-amber-400">890</span>
+                    <span className="text-[10px] text-white/40 mb-0.5">баллов</span>
+                  </div>
+                  <p className="text-[9px] text-white/50 mt-0.5">Отличная репутация. Платежи вовремя.</p>
+                  <p className="hidden group-hover:block text-[9px] text-amber-300 border-t border-amber-500/20 pt-1.5 mt-1.5">Вы защищены от мошенничества.</p>
+                </div>
+                <Btn label="Поделиться 🌟" onClick={() => say('Открываем «Поделиться»')} c="yellow" />
+                {/* 5.2 */}
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Открываем настройки безопасности')}>
+                  <p className="text-[9px] text-white/35 mb-1">🔐 Безопасность</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-emerald-400">✓ Включена</span>
+                    <div className="w-8 h-4 rounded-full bg-emerald-500 relative flex-shrink-0">
+                      <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full" />
+                    </div>
+                  </div>
+                  <p className="text-[9px] text-white/35 mt-0.5">Face ID + 2FA</p>
+                  <p className="hidden group-hover:block text-[9px] text-emerald-300 border-t border-white/10 pt-1.5 mt-1">Ваши средства надёжно защищены.</p>
+                </div>
+                <Btn label="Настроить →" onClick={() => say('Открываем настройки безопасности')} c="ghost" />
+                {/* 5.3 */}
+                <div className="bg-white/5 rounded-xl p-3 group cursor-pointer" onClick={() => say('Открываем чат')}>
+                  <p className="text-[9px] text-white/35 mb-1">📞 Обращения</p>
+                  <p className="text-[11px] font-semibold text-white">Мы всегда на связи</p>
+                  <p className="text-[9px] text-white/40">Чат · Телефон · Форма</p>
+                  <p className="hidden group-hover:block text-[9px] text-blue-300 border-t border-white/10 pt-1.5 mt-1">Напишите или позвоните — мы рядом.</p>
+                </div>
+                <Btn label="Написать в чат →" onClick={() => say('Открываем чат поддержки')} />
+              </div>
+            </PhoneFrame>
+            <div className="flex-1 space-y-5">
+              <WDesc title="5.1 📈 Карма: 890 баллов">
+                <p>Балловая оценка финансовой дисциплины: своевременность оплат, активная защита, отсутствие рисков.</p>
+                <p><span className="text-blue-400">Кнопка:</span> «Поделиться» → шаринг статуса.</p>
+              </WDesc>
+              <WDesc title="5.2 🔐 Безопасность">
+                <p>Статус механизмов защиты аккаунта: Face ID, двухфакторная аутентификация.</p>
+                <p><span className="text-blue-400">Кнопка:</span> «Настроить» → настройки безопасности.</p>
+              </WDesc>
+              <WDesc title="5.3 📞 Обращения">
+                <p>Быстрый доступ к каналам поддержки по финансовым и страховым вопросам.</p>
+                <p><span className="text-blue-400">Кнопка:</span> «Написать в чат» → чат поддержки.</p>
+              </WDesc>
+            </div>
+          </div>
+        </Section>
+
+        {/* ══ SCREEN 6 ══════════════════════════════════════ */}
+        <Section id="sc6" num="Раздел 6" emoji="🎯" title="Статусы в Финтрекере"
+          goal="Геймификация защиты: статусы мотивируют клиентов поддерживать высокий уровень страховой защиты.">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                icon: '🌙', title: 'Глубокий сон',
+                from: 'from-blue-950/80', border: 'border-blue-500/25',
+                conds: ['Индекс защиты > 80', 'Запас > 6 месяцев', 'Нет просрочек', 'Нет открытых рисков'],
+                text: 'Спать можно крепко — подушки хватит на 6 месяцев.',
+                btns: [{ l: 'Проверить защиту', a: () => say('Переход: Финансовый сон'), c: 'ghost' as const }],
+              },
+              {
+                icon: '🌟', title: 'Карма',
+                from: 'from-amber-950/80', border: 'border-amber-500/25',
+                conds: ['Индекс защиты > 80', 'Платежи вовремя', 'Нет рисков'],
+                text: 'Сильный статус и хорошая репутация.',
+                btns: [{ l: 'Поделиться', a: () => say('Открываем «Поделиться»'), c: 'ghost' as const }],
+              },
+              {
+                icon: '🎯', title: 'В зоне контроля',
+                from: 'from-orange-950/80', border: 'border-orange-500/25',
+                conds: ['Индекс 50–70', 'Запас 3–6 мес', 'Есть просрочки', 'Есть риски'],
+                text: 'Вы в зоне контроля — следите за рисками.',
+                btns: [
+                  { l: 'Проверить риски', a: () => say('Переход: Защита от неожиданностей'), c: 'ghost' as const },
+                  { l: 'Продлить полисы', a: () => say('Открываем пролонгацию'), c: 'ghost' as const },
+                ],
+              },
+            ].map((s, i) => (
+              <div key={i} className={`rounded-2xl border ${s.border} bg-gradient-to-br ${s.from} to-transparent p-5`}>
+                <div className="text-4xl mb-3">{s.icon}</div>
+                <h4 className="font-black text-white mb-3 text-base">{s.title}</h4>
+                <div className="space-y-1 mb-4">
+                  {s.conds.map((c, j) => (
+                    <p key={j} className="text-[10px] text-white/45 flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-white/25 flex-shrink-0" />{c}
+                    </p>
+                  ))}
+                </div>
+                <p className="text-[11px] text-white/70 italic mb-4">«{s.text}»</p>
+                <div className="flex flex-wrap gap-2">
+                  {s.btns.map((b, j) => <Btn key={j} label={b.l} onClick={b.a} c={b.c} />)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* ══ SCREEN 7 ══════════════════════════════════════ */}
+        <Section id="sc7" num="Раздел 7" emoji="🔐" title="Кнопки зоны контроля"
+          goal="Быстрый доступ к управлению продуктами, безопасностью и персональными данными.">
+
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <PhoneFrame bg="#050c19">
+              <div className="px-3 pt-4 pb-6 space-y-2">
+                {[
+                  { e: '💳', l: 'Карты и продукты', col: 'text-blue-400', a: () => say('Управление картами') },
+                  { e: '🔐', l: 'Безопасность', col: 'text-emerald-400', a: () => say('Настройки безопасности') },
+                  { e: '🔔', l: 'Уведомления и новости', col: 'text-amber-400', a: () => say('Уведомления') },
+                  { e: '📞', l: 'Обращения в банк', col: 'text-purple-400', a: () => say('Обращения') },
+                  { e: '👤', l: 'Персональные данные', col: 'text-pink-400', a: () => say('Персональные данные') },
+                ].map((item, i) => (
+                  <button key={i} onClick={item.a}
+                    className="w-full flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded-xl px-3 py-2.5 transition-all active:scale-[0.98] group">
+                    <span className="text-base">{item.e}</span>
+                    <span className={`text-[11px] font-semibold ${item.col}`}>{item.l}</span>
+                    <Icon name="ChevronRight" size={13} className="ml-auto text-white/18 group-hover:text-white/45 transition-colors" />
+                  </button>
+                ))}
+              </div>
+            </PhoneFrame>
+            <div className="flex-1 space-y-4">
+              {[
+                { e: '💳', t: '7.1 Карты и продукты', items: ['Управление лимитами', 'Смена пин-кодов', 'Блокировка карт', 'Подключённые опции', 'Счёт по умолчанию'] },
+                { e: '🔐', t: '7.2 Безопасность', items: ['Face ID / Биометрия', 'История входов', 'Привязанные устройства', 'Проверка телефона', 'Сообщить о мошенничестве'] },
+                { e: '🔔', t: '7.3 Уведомления и новости', items: ['Настройка уведомлений', 'Новости банка', 'Акции и предложения'] },
+                { e: '📞', t: '7.4 Обращения', items: ['Чат с поддержкой', 'Телефонная поддержка', 'Форма обратной связи'] },
+                { e: '👤', t: '7.5 Персональные данные', items: ['Редактирование данных', 'Документы', 'Адреса', 'Контакты'] },
+              ].map((g, i) => (
+                <div key={i} className="border border-white/6 rounded-xl p-4">
+                  <p className="text-sm font-bold text-white mb-2">{g.e} {g.t}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {g.items.map((it, j) => (
+                      <span key={j} className="text-[10px] text-white/45 bg-white/5 px-2 py-1 rounded-lg">{it}</span>
                     ))}
                   </div>
-                )}
-              </Card>
-            );
-          })}
-        </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Section>
 
+      </div>
+
+      <div className="border-t border-blue-500/8 py-8 text-center text-[11px] text-slate-700">
+        Финтрекер · Страховой Совкомбанк · Концепция функционала мобильного приложения
       </div>
     </div>
   );
-};
-
-export default Index;
+}
