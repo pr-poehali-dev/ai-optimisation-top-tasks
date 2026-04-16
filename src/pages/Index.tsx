@@ -117,6 +117,9 @@ export default function Index() {
   const [toast, setToast] = useState('');
   const say = (m: string) => { setToast(m); setTimeout(() => setToast(''), 3000); };
 
+  const [activePolicy, setActivePolicy] = useState<number | null>(null);
+  const [promoFilter, setPromoFilter] = useState('Все');
+
   const nav = [
     { id: 'sc1', e: '📱', l: 'Финансовое здоровье' },
     { id: 'sc2', e: '📈', l: 'Путь к цели' },
@@ -125,6 +128,8 @@ export default function Index() {
     { id: 'sc5', e: '📊', l: 'Карма и контроль' },
     { id: 'sc6', e: '🎯', l: 'Статусы' },
     { id: 'sc7', e: '🔐', l: 'Зона контроля' },
+    { id: 'sc8', e: '📋', l: 'Мои полисы' },
+    { id: 'sc9', e: '🎁', l: 'Скидки и промо' },
   ];
 
   return (
@@ -897,6 +902,427 @@ export default function Index() {
             <p><span className="text-blue-400">Кнопка:</span> «Сохранить» → сохранение изменений.</p>
           </Pair>
 
+        </Section>
+
+        {/* ══════════════════════════ SCREEN 8 — МОИ ПОЛИСЫ ══════════════════════════ */}
+        <Section id="sc8" num="Раздел 8" emoji="📋" title="Мои полисы и рекомендации"
+          goal="Дать клиенту единую точку контроля всех страховых продуктов, показать пробелы в защите и предложить персональные рекомендации — не навязчиво, а через данные о его жизни.">
+
+          <Pair title="8.1 📋 Активные полисы — детальные карточки"
+            phone={
+              <Phone label="Экран «Мои полисы»" bg="#060d1b">
+                <div className="px-3 pt-3 pb-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">📋 Мои полисы</p>
+                    <span className="text-[8px] text-blue-300 bg-blue-500/15 px-2 py-0.5 rounded-full">3 активных</span>
+                  </div>
+                  {/* filter tabs */}
+                  <div className="flex gap-1">
+                    {['Все','Активные','Истекают','Рекоменд.'].map((f,i)=>(
+                      <button key={i} onClick={() => say(`Фильтр: ${f}`)}
+                        className={`text-[8px] px-2 py-0.5 rounded-full font-bold transition-all ${i===0 ? 'bg-blue-500 text-white' : 'bg-white/8 text-white/40 hover:bg-white/15'}`}>
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                  {/* policy cards */}
+                  {[
+                    {
+                      id: 0, emoji: '🚗', name: 'ОСАГО', company: 'Страховой Совкомбанк',
+                      cover: '400 000 ₽', paid: '4 800 ₽/год', status: 'ok', daysLeft: 47,
+                      expires: '02.07.2025', num: '№ СГ-2024-000123',
+                    },
+                    {
+                      id: 1, emoji: '✈️', name: 'ВЗР «Премиум»', company: 'Страховой Совкомбанк',
+                      cover: '100 000 €', paid: '850 ₽', status: 'renew', daysLeft: 12,
+                      expires: '30.04.2025', num: '№ СГ-2024-004477',
+                    },
+                    {
+                      id: 2, emoji: '🏠', name: 'Имущество', company: 'Страховой Совкомбанк',
+                      cover: '3 000 000 ₽', paid: '7 200 ₽/год', status: 'ok', daysLeft: 180,
+                      expires: '15.10.2025', num: '№ СГ-2023-009931',
+                    },
+                  ].map((p) => (
+                    <div key={p.id}>
+                      <div
+                        className={`rounded-xl border cursor-pointer transition-all ${activePolicy === p.id ? 'border-blue-500/50 bg-blue-500/8' : 'border-white/8 bg-white/4 hover:bg-white/7'}`}
+                        onClick={() => setActivePolicy(activePolicy === p.id ? null : p.id)}>
+                        <div className="p-3 flex items-center gap-2.5">
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${p.status==='renew' ? 'bg-amber-500/15' : 'bg-emerald-500/10'}`}>
+                            {p.emoji}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-[10px] font-black text-white">{p.name}</p>
+                              <span className={`text-[7px] px-1.5 py-0.5 rounded-full font-bold ${p.status==='ok' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'}`}>
+                                {p.status==='ok' ? '✓ Активен' : '⚠ Истекает'}
+                              </span>
+                            </div>
+                            <p className="text-[8px] text-white/35">{p.num}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-[8px] text-white/50">до {p.expires}</span>
+                              {p.status==='renew' && <span className="text-[8px] text-red-400 font-bold">← {p.daysLeft} дней</span>}
+                            </div>
+                          </div>
+                          <Icon name={activePolicy===p.id ? 'ChevronUp' : 'ChevronDown'} size={13} className="text-white/30" />
+                        </div>
+                        {activePolicy === p.id && (
+                          <div className="px-3 pb-3 border-t border-white/8 pt-2.5 space-y-2">
+                            <div className="grid grid-cols-2 gap-1.5">
+                              {[
+                                ['Покрытие', p.cover],
+                                ['Стоимость', p.paid],
+                                ['Компания', p.company],
+                                ['Действует до', p.expires],
+                              ].map(([k,v],i)=>(
+                                <div key={i} className="bg-white/5 rounded-lg p-1.5">
+                                  <p className="text-[7px] text-white/30 mb-0.5">{k}</p>
+                                  <p className="text-[8px] font-bold text-white">{v}</p>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="flex gap-1.5">
+                              <button onClick={() => say('Открываем документы полиса')} className="flex-1 text-[8px] bg-white/8 hover:bg-white/15 text-white rounded-lg py-1.5 font-bold transition-all">📄 Документы</button>
+                              <button onClick={() => say('Открываем страховой случай')} className="flex-1 text-[8px] bg-white/8 hover:bg-white/15 text-white rounded-lg py-1.5 font-bold transition-all">🛡️ Случай</button>
+                              {p.status==='renew' && <button onClick={() => say(`Продлеваем ${p.name}`)} className="flex-1 text-[8px] bg-amber-500 hover:bg-amber-400 text-white rounded-lg py-1.5 font-bold transition-all">🔄 Продлить</button>}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Phone>
+            }>
+            <p><b className="text-white/80">Сценарий:</b> Клиент открывает приложение утром — сразу видит, что ВЗР истекает через 12 дней. Без поиска, без звонков: тап → «Продлить» → оплата в 2 клика.</p>
+            <p><b className="text-white/80">Механика раскрытия:</b> каждая карточка полиса разворачивается при нажатии и показывает полный набор действий: покрытие, стоимость, документы, кнопку «Страховой случай». Это снижает барьер обращения при наступлении события.</p>
+            <p><b className="text-white/80">Цветовая сигнализация:</b> зелёный = всё под контролем; янтарный = требует внимания; красный таймер = истекает &lt;14 дней. Клиент считывает риск за секунду без чтения текста.</p>
+            <p><b className="text-white/80">Кнопка «Страховой случай» прямо в карточке</b> устраняет главную боль — клиент не знает, куда звонить при ДТП или болезни. Теперь он нажимает на полис и видит пошаговый сценарий.</p>
+            <p><b className="text-white/80">Бизнес-эффект:</b> снижение оттока (пролонгация в один шаг), рост удовлетворённости (мгновенный доступ к документам), рост доверия к бренду.</p>
+          </Pair>
+
+          <Pair title="8.2 🔍 Пробелы в защите — персональные рекомендации"
+            phone={
+              <Phone label="Экран «Рекомендации»" bg="#060d1b">
+                <div className="px-3 pt-3 pb-5 space-y-3">
+                  <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">🔍 Пробелы в защите</p>
+                  <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-sm">⚠️</span>
+                      <p className="text-[9px] font-bold text-amber-300">3 незащищённые зоны</p>
+                    </div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full w-[52%] bg-gradient-to-r from-amber-500 to-red-500 rounded-full"/>
+                    </div>
+                    <p className="text-[8px] text-white/40 mt-1">Индекс защиты: 52/100 — Внимание</p>
+                  </div>
+                  {/* recommendations */}
+                  {[
+                    {
+                      emoji: '🫁', title: 'Здоровье не застраховано',
+                      reason: 'У вас ипотека и 2 иждивенца. При нетрудоспособности доходы прекратятся.',
+                      product: 'НСЖ с защитой от онкологии',
+                      price: 'от 1 200 ₽/мес', saving: 'Покрытие 1 000 000 ₽',
+                      urgency: 'high',
+                    },
+                    {
+                      emoji: '💼', title: 'Нет защиты дохода',
+                      reason: 'Ваш запас спокойствия — 2 месяца. Потеря работы = финансовый риск.',
+                      product: '«Защита дохода»',
+                      price: 'от 600 ₽/мес', saving: 'Выплата до 70% зарплаты',
+                      urgency: 'med',
+                    },
+                    {
+                      emoji: '🐾', title: 'Pet — не рассматривали?',
+                      reason: 'Вы покупали корм в приложении. Ветеринарные расходы могут превысить 50 000 ₽.',
+                      product: 'Страхование питомца',
+                      price: 'от 150 ₽/мес', saving: 'Покрытие до 200 000 ₽',
+                      urgency: 'low',
+                    },
+                  ].map((r, i) => (
+                    <div key={i}
+                      className={`border rounded-xl p-3 cursor-pointer hover:bg-white/5 transition-all ${r.urgency==='high' ? 'border-red-500/25 bg-red-500/5' : r.urgency==='med' ? 'border-amber-500/20 bg-amber-500/5' : 'border-white/8 bg-white/3'}`}
+                      onClick={() => say(`Открываем оформление: ${r.product}`)}>
+                      <div className="flex items-start gap-2">
+                        <span className="text-base mt-0.5">{r.emoji}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1.5 mb-0.5">
+                            <p className="text-[9px] font-black text-white">{r.title}</p>
+                            <span className={`text-[6px] px-1 py-0.5 rounded font-bold ${r.urgency==='high' ? 'bg-red-500/20 text-red-400' : r.urgency==='med' ? 'bg-amber-500/20 text-amber-400' : 'bg-white/10 text-white/40'}`}>
+                              {r.urgency==='high' ? 'ВАЖНО' : r.urgency==='med' ? 'РИСК' : 'ИДЕЯ'}
+                            </span>
+                          </div>
+                          <p className="text-[8px] text-white/50 mb-1.5 leading-tight">{r.reason}</p>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-[8px] font-bold text-blue-300">{r.product}</p>
+                              <p className="text-[7px] text-white/40">{r.price} · {r.saving}</p>
+                            </div>
+                            <button className="text-[8px] bg-blue-500 hover:bg-blue-400 text-white px-2 py-1 rounded-lg font-bold transition-all">
+                              Подробнее
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Phone>
+            }>
+            <p><b className="text-white/80">Механика триггерных рекомендаций:</b> система анализирует профиль клиента — состав семьи, наличие ипотеки, транзакции, историю поездок — и формирует персональный список «пробелов», ранжированных по приоритету риска.</p>
+            <p><b className="text-white/80">Сценарий «Молодая семья»:</b> клиент взял ипотеку → система автоматически поднимает приоритет рекомендации НСЖ и страхования здоровья. Аргумент в рекомендации: «У вас ипотека и 2 иждивенца» — персонально, не шаблонно.</p>
+            <p><b className="text-white/80">Сценарий «Путешественник»:</b> 3+ транзакции на aviasales.ru → за 14 дней до вылета появляется рекомендация ВЗР с конкретной ценой. Клиент оформляет в 2 тапа прямо из уведомления.</p>
+            <p><b className="text-white/80">Сценарий «Владелец гаджетов»:</b> покупка ноутбука &gt;30 000 ₽ → рекомендация страхования техники с расчётом «ремонт стоит X, страховка — Y в месяц».</p>
+            <p><b className="text-white/80">Психология доверия:</b> каждая рекомендация содержит конкретную причину из жизни клиента, а не абстрактный слоган. Это принципиально отличает от баннерной рекламы и повышает конверсию в оформление.</p>
+            <p><b className="text-white/80">Метрика успеха:</b> доля клиентов с 2+ активными полисами (cross-sell), средний чек страховой защиты на клиента.</p>
+          </Pair>
+        </Section>
+
+        {/* ══════════════════════════ SCREEN 9 — СКИДКИ И ПРОМО ══════════════════════════ */}
+        <Section id="sc9" num="Раздел 9" emoji="🎁" title="Скидки, промо и лояльность"
+          goal="Превратить скидку из разового триггера продажи в инструмент долгосрочной лояльности: клиент видит свои привилегии, понимает как их получить и хочет оставаться в экосистеме Страхового Совкомбанка.">
+
+          <Pair title="9.1 🎁 Персональные предложения и срочные акции"
+            phone={
+              <Phone label="Экран «Акции и скидки»" bg="#07101e">
+                <div className="px-3 pt-3 pb-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">🎁 Мои предложения</p>
+                    <span className="text-[8px] text-red-300 bg-red-500/15 px-2 py-0.5 rounded-full animate-pulse">4 активных</span>
+                  </div>
+                  {/* filter */}
+                  <div className="flex gap-1 flex-wrap">
+                    {['Все','Персональные','Срочные','Пакеты'].map((f,i)=>(
+                      <button key={i} onClick={() => setPromoFilter(f)}
+                        className={`text-[8px] px-2 py-0.5 rounded-full font-bold transition-all ${promoFilter===f ? 'bg-blue-500 text-white' : 'bg-white/8 text-white/40 hover:bg-white/15'}`}>
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                  {/* hero promo */}
+                  <div className="relative rounded-xl overflow-hidden cursor-pointer" onClick={() => say('Открываем: Пакет «Семейная защита»')}>
+                    <div className="bg-gradient-to-br from-purple-600/60 via-blue-600/40 to-cyan-600/30 p-4 border border-purple-500/30">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <span className="text-[7px] bg-red-500 text-white px-2 py-0.5 rounded-full font-black">🔥 -30% · 3 дня</span>
+                          <p className="text-sm font-black text-white mt-1.5">Пакет «Семейная защита»</p>
+                          <p className="text-[8px] text-white/60 mt-0.5">ОСАГО + Здоровье + Имущество</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[8px] text-white/40 line-through">19 800 ₽</p>
+                          <p className="text-base font-black text-white">13 860 ₽</p>
+                          <p className="text-[7px] text-purple-300">/год</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex-1 h-1.5 bg-white/15 rounded-full overflow-hidden">
+                          <div className="h-full w-[72%] bg-red-400 rounded-full"/>
+                        </div>
+                        <p className="text-[7px] text-red-300 flex-shrink-0">осталось 18ч</p>
+                      </div>
+                      <button className="w-full py-1.5 bg-white text-[#07101e] text-[9px] font-black rounded-lg hover:bg-blue-50 transition-all active:scale-98" onClick={() => say('Оформляем пакет «Семейная защита»')}>
+                        Оформить со скидкой →
+                      </button>
+                    </div>
+                  </div>
+                  {/* other promos */}
+                  {[
+                    {
+                      emoji: '✈️', title: 'ВЗР для вашей поездки', tag: 'Только для вас',
+                      tagColor: 'bg-blue-500/20 text-blue-300',
+                      desc: 'Вы искали рейс в Дубай. Защитите поездку.', old: '1 200 ₽', now: '850 ₽', disc: '-29%',
+                    },
+                    {
+                      emoji: '🐾', title: 'Страхование питомца', tag: '-20% новым',
+                      tagColor: 'bg-emerald-500/20 text-emerald-300',
+                      desc: 'Первый год — со скидкой. Ветклиники по всей РФ.', old: '1 800 ₽', now: '1 440 ₽', disc: '-20%',
+                    },
+                  ].map((p, i) => (
+                    <div key={i}
+                      className="bg-white/5 border border-white/8 hover:border-blue-500/30 rounded-xl p-3 cursor-pointer transition-all group"
+                      onClick={() => say(`Открываем: ${p.title}`)}>
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-xl mt-0.5">{p.emoji}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1.5 mb-0.5">
+                            <p className="text-[9px] font-black text-white">{p.title}</p>
+                            <span className={`text-[6px] px-1.5 py-0.5 rounded font-bold ${p.tagColor}`}>{p.tag}</span>
+                          </div>
+                          <p className="text-[8px] text-white/45 mb-1.5">{p.desc}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[8px] text-white/30 line-through">{p.old}</span>
+                              <span className="text-[10px] font-black text-white">{p.now}</span>
+                              <span className="text-[8px] text-emerald-400 font-bold">{p.disc}</span>
+                            </div>
+                            <button className="text-[8px] bg-blue-500/20 group-hover:bg-blue-500 text-blue-300 group-hover:text-white px-2 py-0.5 rounded-lg font-bold transition-all">
+                              Оформить
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Phone>
+            }>
+            <p><b className="text-white/80">Механика персонализации:</b> предложения генерируются на основе поведенческих данных — транзакции, история поездок, состав семьи, текущие полисы. Клиент видит только релевантные акции, а не спам.</p>
+            <p><b className="text-white/80">Сценарий «Таймер дефицита»:</b> горящее предложение с обратным отсчётом и индикатором «осталось X предложений» создаёт психологическую мотивацию действовать сейчас. Конверсия таких механик в 2–3 раза выше обычных баннеров.</p>
+            <p><b className="text-white/80">Сценарий «Поймать момент»:</b> клиент искал авиабилеты → через 24 часа в Финтрекере появляется персональный оффер ВЗР с конкретной датой поездки и ценой. Контекстный момент — максимальная лояльность к предложению.</p>
+            <p><b className="text-white/80">Пакетные предложения</b> решают задачу кросс-продаж: вместо того чтобы продавать ОСАГО, здоровье и имущество по отдельности, пакет «Семейная защита» снижает воспринимаемую стоимость и увеличивает среднее количество полисов на клиента.</p>
+            <p><b className="text-white/80">Бизнес-логика скидок:</b> скидка 30% на пакет при том что средняя стоимость 3 продуктов по отдельности выше — математически клиент экономит, банк получает 3 продукта вместо 1. Win-win.</p>
+          </Pair>
+
+          <Pair title="9.2 🏅 Программа лояльности — уровни привилегий"
+            phone={
+              <Phone label="Экран «Лояльность»" bg="#07101e">
+                <div className="px-3 pt-3 pb-5 space-y-3">
+                  <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">🏅 Мой уровень</p>
+                  {/* level card */}
+                  <div className="relative rounded-xl overflow-hidden cursor-pointer" onClick={() => say('Открываем детали программы лояльности')}>
+                    <div className="bg-gradient-to-br from-amber-600/30 via-yellow-500/20 to-amber-900/40 border border-amber-500/30 p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <p className="text-[8px] text-amber-300/70 mb-0.5">Текущий уровень</p>
+                          <p className="text-lg font-black text-amber-300">🥇 Золотой</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[8px] text-white/40">Баллы</p>
+                          <p className="text-2xl font-black text-white">2 480</p>
+                        </div>
+                      </div>
+                      <div className="mb-2">
+                        <div className="flex justify-between text-[7px] text-white/40 mb-1">
+                          <span>Золотой · 2 480</span>
+                          <span>Платиновый · 5 000</span>
+                        </div>
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div className="h-full w-[49%] bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full"/>
+                        </div>
+                        <p className="text-[7px] text-amber-300 mt-1">Ещё 2 520 баллов до Платинового</p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* privileges */}
+                  <div>
+                    <p className="text-[8px] text-white/30 mb-1.5">Ваши привилегии</p>
+                    <div className="space-y-1.5">
+                      {[
+                        { icon: '💰', text: 'Скидка 15% на все полисы', active: true },
+                        { icon: '🚀', text: 'Приоритетное рассмотрение случаев', active: true },
+                        { icon: '🎁', text: 'Бесплатный ВЗР при покупке тура', active: true },
+                        { icon: '🔮', text: 'Скидка 25% (Платиновый)', active: false },
+                      ].map((pr, i) => (
+                        <div key={i} className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ${pr.active ? 'bg-emerald-500/8 border border-emerald-500/15' : 'bg-white/3 border border-white/5 opacity-50'}`}>
+                          <span className="text-sm">{pr.icon}</span>
+                          <span className="text-[8px] text-white/70">{pr.text}</span>
+                          {pr.active && <span className="ml-auto text-[7px] text-emerald-400">✓</span>}
+                          {!pr.active && <span className="ml-auto text-[7px] text-white/30">🔒</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* earn points */}
+                  <div className="bg-blue-500/8 border border-blue-500/20 rounded-xl p-3">
+                    <p className="text-[8px] text-blue-300 font-bold mb-1.5">Как получить баллы быстрее?</p>
+                    <div className="space-y-1">
+                      {[
+                        { action: 'Оформить НСЖ', points: '+500 баллов' },
+                        { action: 'Продлить КАСКО', points: '+200 баллов' },
+                        { action: 'Пройти опрос', points: '+50 баллов' },
+                      ].map((e,i)=>(
+                        <div key={i} className="flex items-center justify-between cursor-pointer" onClick={() => say(e.action)}>
+                          <span className="text-[8px] text-white/50">{e.action}</span>
+                          <span className="text-[8px] font-bold text-amber-400">{e.points}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Btn label="Все способы заработать →" onClick={() => say('Открываем программу лояльности')} c="yellow" />
+                </div>
+              </Phone>
+            }>
+            <p><b className="text-white/80">Механика уровней лояльности:</b> Базовый → Серебряный → Золотой → Платиновый. Переход на уровень выше разблокирует реальные финансовые привилегии (скидки, бесплатные продукты), что создаёт стимул оставаться в экосистеме и расширять портфель.</p>
+            <p><b className="text-white/80">Сценарий «Сохранение клиента»:</b> клиент думает уйти к конкуренту. Он видит, что до Платинового уровня осталось 2 520 баллов и скидка 25% — это сдерживает отток. Нематериальный актив становится реальным.</p>
+            <p><b className="text-white/80">Сценарий «Семейная экспансия»:</b> баллы начисляются за каждый новый полис члена семьи. Клиент превращается в «агента влияния» внутри домохозяйства — приводит супруга, родителей, детей в экосистему.</p>
+            <p><b className="text-white/80">Геймификация через прогресс-бар:</b> визуальный прогресс к следующему уровню («осталось 2 520 баллов») активирует эффект незавершённого действия — человек подсознательно хочет «дотянуть».</p>
+            <p><b className="text-white/80">Приоритетное рассмотрение случаев</b> для Золотого и Платинового уровней — это не просто скидка, это про уважение и статус. Для страхования, где момент выплаты критичен, это сильнейший аргумент оставаться лояльным.</p>
+            <p><b className="text-white/80">Бизнес-эффект:</b> рост LTV (жизненной ценности клиента), снижение churn rate, увеличение среднего портфеля с 1.4 до 3+ полисов на клиента.</p>
+          </Pair>
+
+          <Pair title="9.3 📦 Пакетные предложения — «Собери свою защиту»"
+            phone={
+              <Phone label="Экран «Пакеты»" bg="#07101e">
+                <div className="px-3 pt-3 pb-5 space-y-3">
+                  <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">📦 Готовые пакеты</p>
+                  <p className="text-[8px] text-white/40">Выберите пакет под вашу жизненную ситуацию</p>
+                  {[
+                    {
+                      id: 'family', emoji: '👨‍👩‍👧', name: 'Семейная защита',
+                      tag: 'Популярный', tagC: 'bg-blue-500/20 text-blue-300',
+                      items: ['ОСАГО','Здоровье семьи','Имущество'],
+                      old: '19 800 ₽', now: '13 860 ₽', save: '−5 940 ₽',
+                      color: 'from-blue-600/20 to-blue-900/30', border: 'border-blue-500/25',
+                    },
+                    {
+                      id: 'travel', emoji: '✈️', name: 'Для путешественника',
+                      tag: 'Для активных', tagC: 'bg-cyan-500/20 text-cyan-300',
+                      items: ['ВЗР Премиум','Страх. гаджетов','Помощь на дороге'],
+                      old: '5 800 ₽', now: '3 990 ₽', save: '−1 810 ₽',
+                      color: 'from-cyan-600/20 to-cyan-900/30', border: 'border-cyan-500/25',
+                    },
+                    {
+                      id: 'basic', emoji: '🛡️', name: 'Базовая защита',
+                      tag: 'Эконом', tagC: 'bg-emerald-500/20 text-emerald-300',
+                      items: ['ОСАГО','Имущество'],
+                      old: '12 000 ₽', now: '9 600 ₽', save: '−2 400 ₽',
+                      color: 'from-emerald-600/15 to-emerald-900/20', border: 'border-emerald-500/20',
+                    },
+                  ].map((pkg) => (
+                    <div key={pkg.id}
+                      className={`rounded-xl border ${pkg.border} bg-gradient-to-br ${pkg.color} p-3 cursor-pointer hover:brightness-110 transition-all active:scale-[0.98]`}
+                      onClick={() => say(`Выбираем пакет: ${pkg.name}`)}>
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{pkg.emoji}</span>
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-[10px] font-black text-white">{pkg.name}</p>
+                              <span className={`text-[6px] px-1.5 py-0.5 rounded font-bold ${pkg.tagC}`}>{pkg.tag}</span>
+                            </div>
+                            <div className="flex gap-1 mt-0.5 flex-wrap">
+                              {pkg.items.map((it,i)=>(
+                                <span key={i} className="text-[7px] text-white/40 bg-white/5 px-1 rounded">{it}</span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-[7px] text-white/30 line-through">{pkg.old}</p>
+                          <p className="text-[11px] font-black text-white">{pkg.now}</p>
+                          <p className="text-[7px] text-emerald-400 font-bold">{pkg.save}</p>
+                        </div>
+                      </div>
+                      <button className="w-full py-1.5 bg-white/10 hover:bg-white/20 text-white text-[8px] font-bold rounded-lg transition-all">
+                        Выбрать пакет →
+                      </button>
+                    </div>
+                  ))}
+                  <div className="text-center">
+                    <button onClick={() => say('Открываем конструктор')} className="text-[9px] text-blue-400 hover:text-blue-300 font-bold underline underline-offset-2 transition-colors">
+                      Собрать свой пакет →
+                    </button>
+                  </div>
+                </div>
+              </Phone>
+            }>
+            <p><b className="text-white/80">Логика пакетирования:</b> клиенту сложно самому собрать оптимальный набор полисов — страховые продукты незнакомы. Готовые пакеты снижают когнитивную нагрузку и предлагают проверенные комбинации под жизненную ситуацию.</p>
+            <p><b className="text-white/80">Сценарий «Молодожёны»:</b> пара только оформила ипотеку → появляется пакет «Семейная защита» с уже включённым страхованием имущества, жизни и здоровья. Один оффер закрывает 3 потребности сразу.</p>
+            <p><b className="text-white/80">Сценарий «Частый путешественник»:</b> система видит 4+ поездки за год → предлагает пакет «Для путешественника» с годовым мультивизовым ВЗР, страховкой гаджетов и помощью на дороге. Сумма сэкономленного — конкретная цифра в интерфейсе.</p>
+            <p><b className="text-white/80">«Собери свой пакет»</b> — конструктор для продвинутых клиентов. Можно добавить или убрать продукты, цена пересчитывается в реальном времени. Геймификация выбора = рост вовлечённости и времени в приложении.</p>
+            <p><b className="text-white/80">Визуальный акцент на экономии</b> (−5 940 ₽ зачёркнутой ценой) активирует восприятие выгоды. Клиент видит не «я трачу 13 860», а «я экономлю почти 6 000». Это фундаментальный принцип поведенческой экономики (эффект якоря).</p>
+            <p><b className="text-white/80">Бизнес-эффект:</b> средний портфель клиента растёт с 1–2 до 3–4 полисов, снижается стоимость привлечения следующего продукта в 2–3 раза по сравнению с прямой продажей.</p>
+          </Pair>
         </Section>
 
       </div>
